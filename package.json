@@ -1,0 +1,24 @@
+{
+  "name": "revpact",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-funding, RAMS-mandated agent mesh operating a tokenized revenue-share asset on Brickken.",
+  "type": "module",
+  "scripts": {
+    "setup:wallet": "tsx scripts/setup-wallet.ts",
+    "fund:x402": "tsx scripts/fund-via-x402.ts",
+    "issuer:run": "tsx src/agents/issuerAgent.ts",
+    "ops:run": "tsx src/agents/opsAgent.ts",
+    "compliance:run": "tsx src/agents/complianceAgent.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.7.0"
+  }
+}
