@@ -63,7 +63,13 @@ scripts/              wallet setup, x402 faucet funding
 
 ## Status
 
-🚧 Pre-access scaffold. No Brickken API key or funded wallet yet — see [`docs/build-plan.md`](docs/build-plan.md) for the day-by-day sequence from here to submission. Method names and payload shapes in `src/brickken/` are seeded from patterns other participants reported publicly (see sources noted inline) and from ERC-8226 / x402 public material; **every one of them needs to be checked against the live [docs.brickken.com](https://docs.brickken.com) reference before first real call** — that verification pass is step 1 of the build plan.
+✅ **Live on Ethereum Sepolia.** Real API key, real wallets, real confirmed transactions — see [`docs/transactions.md`](docs/transactions.md) for the full log with tx hashes. Verified end to end so far: tokenize → whitelist investor → mint. The `scripts/tx.mjs` prepare→sign→send→poll runner (verified against the live sandbox, schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt)) drives every write.
+
+Blocked on external funding/access, tracked in `docs/transactions.md` and `docs/build-plan.md`:
+- Dividend distribution needs test USDT in the issuer wallet (mock token's `mint()` is access-controlled).
+- ERC-8004 registration and RAMS mandates need Base Sepolia funding plus a Brickken-issued RAMS `identityRef` + executor.
+
+The `src/` TypeScript scaffold (agents, clients) predates this live verification pass and still needs reconciling against the confirmed schemas in `docs/brickken-docs-reference.txt` — the shell scripts in `scripts/` are the currently-working path.
 
 ## Judging alignment
 

@@ -1,0 +1,73 @@
+{
+  "prepared": {
+    "transactions": [
+      {
+        "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+        "to": "0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c",
+        "value": "0x00",
+        "nonce": 1,
+        "chainId": 11155111,
+        "data": "0xd362e8a70000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001",
+        "type": 2,
+        "maxPriorityFeePerGas": "1150000",
+        "maxFeePerGas": "1220972601",
+        "gasLimit": "0x01ffde"
+      }
+    ],
+    "info": {
+      "tokenizerEmail": "yezirhasan@gmail.com",
+      "tokenSymbol": "RVP1",
+      "investorEmails": [
+        "revpact.investor1@example.com"
+      ]
+    },
+    "txId": "0x81dfcb6a15ad062690875649ee35f6aa8dd0ba661e768cde2e470b608146cf9a"
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0x81dfcb6a15ad062690875649ee35f6aa8dd0ba661e768cde2e470b608146cf9a",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 1,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x48c69039"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0x01ffde"
+              },
+              "to": "0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0xd362e8a70000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001",
+              "accessList": [],
+              "hash": "0x71e0dfd6f02073d81999fe2b25447d95c41459270057c19ded6857dd5bc0f1e3",
+              "v": 1,
+              "r": "0x78db8db1c24c79adf07c4a0a4b4011bc4716f405be5b466213924398941a1b58",
+              "s": "0x35d08e007e2f84969b0611ed1368e4b25bc2e1bbeb1e28d84f7a057e2f91b428",
+              "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

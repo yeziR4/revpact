@@ -1,0 +1,28 @@
+{
+  "prepared": {
+    "txId": "0x72a1d47e56bcf7ba7a3f75fce910424a02f43cad6a43d381a43cbd365fbfeb53",
+    "info": {
+      "tokenizerEmail": "yezirhasan@gmail.com",
+      "tokenSymbol": "RVP1",
+      "tokenName": "RevPact Revenue Share"
+    }
+  },
+  "sent": {
+    "success": true,
+    "transactionHash": "0xb764cd03f8590ad5381a4223e715c4b50201f0a2345a511eed8940bf84a79b45",
+    "tokenContractAddress": "0x14c0f58b4131dbcc95c6ef61683008db67ab3db9",
+    "info": {
+      "id": "6e365a30-6f1b-4f88-9e97-4697be0980ef",
+      "chainId": "aa36a7",
+      "tokenName": "RevPact Revenue Share",
+      "tokenSymbol": "RVP1",
+      "tokenizerEmail": "yezirhasan@gmail.com",
+      "tokenizerAddress": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA"
+    }
+  },
+  "onChainReceipt": {
+    "status": "0x1",
+    "blockNumber": "0xb1dd28",
+    "transactionHash": "0xb764cd03f8590ad5381a4223e715c4b50201f0a2345a511eed8940bf84a79b45"
+  }
+}

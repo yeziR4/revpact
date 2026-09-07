@@ -1,0 +1,24 @@
+{
+  "request": {
+    "endpoint": "POST /faucet/bkn",
+    "auth": "x-api-key (NOT x402 — see known-issues.md, this leg needs redoing via x402 once Base Sepolia funding is available)",
+    "recipientAddress": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+    "idempotencyKey": "230f5f97-e46c-4c63-aadb-62b32608fa3d"
+  },
+  "response": {
+    "claimId": "5340a644-3e40-4577-b34a-4e50874e907a",
+    "status": "submitted",
+    "chainId": "11155111",
+    "recipientAddress": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+    "amount": "100",
+    "amountRaw": "100000000000000000000",
+    "token": {
+      "address": "0x2458fB1620ff84019d73216fF20aA1F82Bc8E4CC",
+      "symbol": "BKN",
+      "decimals": 18
+    },
+    "transactionHash": "0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a",
+    "explorerUrl": "https://sepolia.etherscan.io/tx/0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a",
+    "cooldownEndsAt": "2026-09-08T20:34:22.781Z"
+  }
+}

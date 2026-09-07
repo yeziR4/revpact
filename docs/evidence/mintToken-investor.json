@@ -1,0 +1,64 @@
+{
+  "prepared": {
+    "transactions": {
+      "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "to": "0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c",
+      "value": "0x00",
+      "nonce": 2,
+      "chainId": 11155111,
+      "data": "0x7c88e3d90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d9000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000001b1ae4d6e2ef500000",
+      "type": 2,
+      "maxPriorityFeePerGas": "1150000",
+      "maxFeePerGas": "1153183837",
+      "gasLimit": "0x04a6f7"
+    },
+    "txId": "0xa07a37994adf7607acc098bc536755ad316ddf996a84ea3c644b112e8d912c8c"
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0xa07a37994adf7607acc098bc536755ad316ddf996a84ea3c644b112e8d912c8c",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 2,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x44bc305d"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0x04a6f7"
+              },
+              "to": "0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0x7c88e3d90000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000010000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d9000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000001b1ae4d6e2ef500000",
+              "accessList": [],
+              "hash": "0x7e9bf59ffb887ac31efc275a7ab581938fcd08da17b13aa740d45675703736c6",
+              "v": 1,
+              "r": "0x3e6b716f507a2800cf5e8c2c112e7a636122a723689d7d7468e3bffb35da2cd3",
+              "s": "0x15a9461fc12044d84d45226977af47c448eb1819f25d1d521e186fadd8cf91b1",
+              "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
