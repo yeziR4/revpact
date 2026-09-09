@@ -1,0 +1,72 @@
+{
+  "prepared": {
+    "transactions": [
+      {
+        "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+        "to": "0x14C0F58B4131DbCC95C6Ef61683008db67AB3DB9",
+        "value": "0x00",
+        "data": "0x8cc476c800000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba",
+        "nonce": "0x05",
+        "type": 2,
+        "maxPriorityFeePerGas": "0x118c30",
+        "maxFeePerGas": "0x4a0f9bec",
+        "chainId": 11155111,
+        "gasLimit": "0x01d1cd"
+      }
+    ],
+    "info": {
+      "tokenizerEmail": "yezirhasan@gmail.com",
+      "tokenSymbol": "RVP1",
+      "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "to": "0x14C0F58B4131DbCC95C6Ef61683008db67AB3DB9"
+    },
+    "txId": "0x1f76627bf32f5ad9e4bfe46943a60480a1789a6c6d51cf6df66ef380f1baffee"
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0x1f76627bf32f5ad9e4bfe46943a60480a1789a6c6d51cf6df66ef380f1baffee",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 5,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x4a0f9bec"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0x01d1cd"
+              },
+              "to": "0x14C0F58B4131DbCC95C6Ef61683008db67AB3DB9",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0x8cc476c800000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba",
+              "accessList": [],
+              "hash": "0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e",
+              "v": 1,
+              "r": "0x0fea3c9c8be42056a8146867f2317e851b9b59092bde5b664ac80263b5f5d287",
+              "s": "0x24d4a404349aa5d93a4bfa75434317be32940985ec056b44d09aab092a5f7d25",
+              "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
