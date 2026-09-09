@@ -9,17 +9,22 @@ Not an "agent" with logic of its own — the funding source. Holds testnet ETH f
 - Registers an ERC-8004 identity for itself.
 - Runs the asset lifecycle over the Dapp API: `newTokenization` → `newSto` → `whitelist` → `mintToken` (to investors) → later, `dividendDistribution` for the first payout round, to prove it *can* do the full thing end to end before it delegates anything away.
 - Issues two RAMS mandates (see below), each to a distinct wallet/identity it does not otherwise control day-to-day.
-- Holds mint/burn authority itself — this is deliberately *not* delegated to either subordinate agent. Only payout execution and freeze/revoke are delegated.
+- Holds mint/burn authority itself — this is deliberately *not* delegated to either subordinate agent. Only payout execution (a RAMS mandate) and revoke authority (a RAMS operator approval) are delegated; freeze is registry-admin-only and out of scope unless Brickken grants it.
 
 ### Ops Agent (RAMS-mandated)
-- Mandate scope: **may call `dividendDistribution` (and its required `approve`) for this token only, up to a cumulative cap, within a time window.**
-- Cannot mint, burn, whitelist, or touch any other token.
+- Mandate scope (as actually implemented, see below): **may move up to a capped amount of the payment token (USDT) from the issuer's treasury via `transferFrom`, standing in for a dividend payout.**
+- Cannot mint, burn, whitelist, or touch any other asset.
 - Demo proof point: attempt a payout that exceeds the mandate cap and show it rejected at the mandate layer, not just at the application layer — i.e. the chain/contract refuses it, not just our own client-side check.
 
-### Compliance Agent (RAMS-mandated)
-- Mandate scope: **may call freeze / `revokeMandate` (or the equivalent whitelist-revocation path) for this token only.** No mint, no burn, no payout authority.
+**Scoping note (confirmed against the live RAMS API, 2026-09-09):** Brickken's own `dividendDistribution` is a custom contract method, not a plain ERC-20 `transferFrom`. Routing it through RAMS would require registering its selector on the AgentExecutor via `ramsSetExecutorAction`, with the correct ABI word index for the amount — and that call must come from the *executor owner*, which may be Brickken on our dedicated sandbox executor rather than us. Rather than risk that dependency inside the build window, the Ops Agent's mandate uses RAMS's documented ERC-20 helper mode instead (`asset`/`from`/`to`/`amount` → the API encodes `transferFrom`), moving the payment token itself under a real, enforced cap. This is a deliberate scope call, not an oversight — it demonstrates the identical mechanism (capped, delegated, revocable authority moving real value) without the extra dependency. If Brickken confirms we own the executor, upgrading to a native `dividendDistribution` selector is a same-day follow-up, tracked in `docs/build-plan.md`.
+
+### Compliance Agent (RAMS **operator**, not a mandate)
+- **Correction (2026-09-09, confirmed against the live API):** freeze and revoke are not modeled as a "mandate" in RAMS the way payout authority is. They're two distinct primitives:
+  - `ramsRevokeMandate` — callable by the **principal**, or by any wallet the principal has approved as an **operator** via `ramsSetOperator`. This is exactly a delegated revoke authority, so the Compliance Agent's real scope is: **the issuer (principal) approves the Compliance Agent as a RAMS operator**, which then lets it directly revoke the Ops Agent's mandate on its own signature — no separate "grant" step needed beyond that operator approval.
+  - `ramsFreezeAgent` — requires **`ENFORCER_ROLE`** on the AgentMandate registry, a registry-admin role, not something a principal can delegate via a mandate or operator approval. On the shared Sandbox this role is Brickken's to grant. Treated as a **stretch addition**: ask Brickken for it if there's time; the core demo does not depend on it.
+- No mint, no burn, no payout authority — operator approval only reaches `revokeMandate`/`extendMandate`, nothing else.
 - Driven by the trigger engine (`src/rules/`), not by a human pressing a button in the demo. Feed it something that looks like a real signal — a webhook payload, a simple threshold on an off-chain data value — so the "autonomous" claim is literal.
-- Demo proof point: same shape as the Ops Agent's — show the Compliance Agent attempting something outside its mandate (e.g. a mint) and being refused, to make the boundary visible rather than asserted.
+- Demo proof point: same shape as the Ops Agent's — show the Compliance Agent attempting something outside its reach (e.g. `ramsExecute`, which only the mandate's own `agent` can call) and being refused, to make the boundary visible rather than asserted.
 
 ## Full sequence
 
@@ -43,15 +48,14 @@ sequenceDiagram
     Issuer->>Token: newSto
     Issuer->>Token: whitelist investors
     Issuer->>Token: mintToken (investor allocations)
-    Issuer->>Rams: grantMandate(Ops, scope=dividendDistribution, cap=X)
-    Issuer->>Rams: grantMandate(Compliance, scope=freeze|revoke)
-    Ops->>Token: dividendDistribution (within cap) [x402-paid call]
+    Issuer->>Rams: grantMandate(Ops, asset=USDT, action=transferFrom, cap=X)
+    Issuer->>Rams: setOperator(Compliance, approved=true)
+    Ops->>Rams: execute (transferFrom, within cap) [x402-paid call]
     Trig-->>Comp: compliance signal fires
-    Comp->>Rams: act under mandate (revoke / freeze)
-    Comp->>Token: whitelist revoked / transfers frozen
-    Note over Ops,Rams: Out-of-mandate attempt (e.g. Ops tries to mint)
-    Ops->>Rams: attempt out-of-scope action
-    Rams-->>Ops: rejected — outside mandate
+    Comp->>Rams: revokeMandate(Ops) — as approved operator
+    Note over Ops,Rams: Out-of-mandate attempt (e.g. Ops calls execute after revoke, or over cap)
+    Ops->>Rams: attempt out-of-scope/expired action
+    Rams-->>Ops: rejected — mandate inactive or cap exceeded
 ```
 
 ## Trigger engine

@@ -21,7 +21,7 @@ Starting point: no API key, no funded wallet yet. 13 days.
 
 ## Day 8–10: RAMS delegation (the risky, novel part — start early)
 - Grant the Ops Agent a mandate scoped to `dividendDistribution` with a cap below the full treasury/dividend pool.
-- Grant the Compliance Agent a mandate scoped to freeze/revoke only.
+- Approve the Compliance Agent as a RAMS operator (`ramsSetOperator`), which lets it call `revokeMandate` on the Ops Agent's mandate directly. Freeze (`ramsFreezeAgent`) needs Brickken-granted `ENFORCER_ROLE` — stretch goal, not required for the core demo.
 - Build the trigger engine (`src/rules/`) and wire a real (if simple) external signal into it.
 - Run a second dividend round *through* the Ops Agent under its mandate — this is the one Tixken's public submission explicitly could not confirm live; getting this working is the core differentiator.
 - Deliberately attempt one out-of-mandate action per subordinate agent and capture the on-chain/contract-level rejection, not just an app-level check.

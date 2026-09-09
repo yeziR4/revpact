@@ -42,7 +42,7 @@ flowchart TB
 
     subgraph mandates["3. RAMS-delegated agents"]
         IA -->|grantMandate: payouts <= cap| OA[Ops Agent]
-        IA -->|grantMandate: freeze/revoke only| CA[Compliance Agent]
+        IA -->|setOperator: revoke authority| CA[Compliance Agent]
         OA -->|dividendDistribution, bounded| T
         TRIG[Trigger engine\nrules / webhook] -->|compliance signal| CA
         CA -->|revokeMandate / freeze, bounded| T

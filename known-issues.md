@@ -31,6 +31,16 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** always set a generous timeout (60s+) on this call, and retry with the *same* `Idempotency-Key` on a client-side timeout rather than assuming failure and generating a new one.
 - **Reported to Brickken team:** no — this reads as expected async behavior, not a bug, so not escalated.
 
+### RAMS "mandate" and "freeze" are not the same delegation model
+
+- **Method / endpoint:** `POST /prepare-transactions` (`ramsGrantMandate`, `ramsSetOperator`, `ramsFreezeAgent`), reasoning from `docs/brickken-docs-reference.txt`, not a live error.
+- **Date hit:** 2026-09-09 (design-time, caught before writing code against the wrong model).
+- **What we assumed:** a single "grant a mandate scoped to freeze/revoke" call, symmetric with the payout mandate.
+- **What's actually true:** `revokeMandate` is delegable — a principal approves an address as an **operator** (`ramsSetOperator`) and that operator can then revoke directly. `freezeAgent` is a *different* primitive entirely: a registry-wide admin action gated by `ENFORCER_ROLE`, not something a principal can hand out via a mandate or operator approval at all.
+- **Why it matters:** a design built around "grant the compliance agent a freeze+revoke mandate" doesn't correspond to any real RAMS call — it would have failed the first time we tried to execute it. Caught by reading the RAMS actors table and the individual endpoint docs closely rather than assuming symmetry with the payout side.
+- **Workaround used:** redesigned the Compliance Agent around `ramsSetOperator` + `ramsRevokeMandate` (fully self-serviceable once the principal is set up); treated `freezeAgent` as an optional stretch addition pending Brickken granting `ENFORCER_ROLE`, not a dependency of the core demo. See `docs/architecture.md`.
+- **Reported to Brickken team:** not a bug — this is the documented design, we just read it wrong on the first pass.
+
 ## Template for entries found during this build
 
 ```

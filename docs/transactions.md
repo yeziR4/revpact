@@ -8,6 +8,7 @@ Real, verifiable transactions produced by this build. Chain: Ethereum Sepolia un
 | 2 | Whitelist test investor | `whitelist` | [`0x71e0dfd6f02073d81999fe2b25447d95c41459270057c19ded6857dd5bc0f1e3`](https://sepolia.etherscan.io/tx/0x71e0dfd6f02073d81999fe2b25447d95c41459270057c19ded6857dd5bc0f1e3) | Investor `0x2096885bc90612ad5Db2CB9e5F07340B406D45D9` |
 | 3 | Mint 500 RVP1 to investor | `mintToken` | [`0x7e9bf59ffb887ac31efc275a7ab581938fcd08da17b13aa740d45675703736c6`](https://sepolia.etherscan.io/tx/0x7e9bf59ffb887ac31efc275a7ab581938fcd08da17b13aa740d45675703736c6) | |
 | 4 | BKN faucet claim | `POST /faucet/bkn` | [`0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a`](https://sepolia.etherscan.io/tx/0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a) | 100 BKN to issuer wallet. **Paid via `x-api-key`, not yet the x402 flow** — the x402-paid version (0.01 USDC → 100 BKN, genuinely agent-paid) needs Base Sepolia funding first; see known-issues.md / build-plan.md for the plan to redo this leg properly. |
+| 5 | Launch STO | `newSto` | [`0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13`](https://sepolia.etherscan.io/tx/0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13) | "RVP1 Genesis Offering", 500 RVP1 offered, soft cap 10 USDT / hard cap 500 USDT, ~15 min window. No investor has funded USDT yet, so this will finalize into rollback unless that's resolved before `endDate` — a legitimate part of the lifecycle either way. |
 
 ## Pending on funding / access
 

@@ -1,0 +1,9 @@
+{
+  "agent": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+  "validUntil": "1790159946",
+  "identityRef": "__FROM_BRICKKEN__",
+  "asset": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+  "actions": ["0x23b872dd"],
+  "maxTransactionValue": "50000000",
+  "maxCumulativeValue": "100000000"
+}
