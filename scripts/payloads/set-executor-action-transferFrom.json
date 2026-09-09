@@ -1,0 +1,7 @@
+{
+  "executorAddress": "0xE9832b090fBaEe59Bb26F2394448cfF49a6B87D7",
+  "selector": "0x23b872dd",
+  "supported": true,
+  "hasAmount": true,
+  "amountIndex": 2
+}

@@ -41,6 +41,16 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** redesigned the Compliance Agent around `ramsSetOperator` + `ramsRevokeMandate` (fully self-serviceable once the principal is set up); treated `freezeAgent` as an optional stretch addition pending Brickken granting `ENFORCER_ROLE`, not a dependency of the core demo. See `docs/architecture.md`.
 - **Reported to Brickken team:** not a bug — this is the documented design, we just read it wrong on the first pass.
 
+### `grant-principal` confirmation didn't match live `compliance-status`
+
+- **Method / endpoint:** `GET /rams/compliance-status`, `POST /prepare-transactions` (`ramsGrantMandate`).
+- **Date hit:** 2026-09-09.
+- **Request (redacted):** `compliance-status?chainId=11155111&principal=<issuer>&identityRef=<value Brickken sent>`, against the documented default ComplianceProvider (`0xa90D2503D5D9b80ECC27856Ff76F892B8C02f278`).
+- **Observed response / error:** `{"eligible":false,"reason":"IDENTITY_NOT_FOUND","reasonCode":6}` — both from the read endpoint directly and as the failure reason on `ramsGrantMandate`. Reproduced identically across two attempts, with and without an explicit `complianceProvider` field on the grant request, and with both decimal and hex `chainId`.
+- **Root cause (if known):** unclear — the Brickken team's setup message (identityRef + dedicated `AgentExecutor`, `RECORDER_ROLE` confirmed) describes a state the read endpoint doesn't yet reflect. Possibly a `grant-principal` transaction that hasn't landed/confirmed yet, or a provider-address mismatch on their side.
+- **Workaround used:** none yet — escalated back to Brickken with the exact repro (see message logged in this session) rather than guessing further. Everything *not* gated on principal eligibility worked immediately: `ramsSetExecutorAction` for `transferFrom` on our dedicated executor confirmed on the first try.
+- **Reported to Brickken team:** yes, 2026-09-09, with the exact query and response above.
+
 ## Template for entries found during this build
 
 ```

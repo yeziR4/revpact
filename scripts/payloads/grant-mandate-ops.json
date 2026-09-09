@@ -1,7 +1,9 @@
 {
   "agent": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+  "principal": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
   "validUntil": "1790159946",
-  "identityRef": "__FROM_BRICKKEN__",
+  "identityRef": "0xc60e8c18facc2369184119d69a11f1ccf0d3c2a56dd31605d03c7c81f73a42e2",
+  "complianceProvider": "0xa90D2503D5D9b80ECC27856Ff76F892B8C02f278",
   "asset": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
   "actions": ["0x23b872dd"],
   "maxTransactionValue": "50000000",
