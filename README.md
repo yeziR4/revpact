@@ -4,19 +4,21 @@
 
 Built for the **Brickken Build with Brickken Programme — Agentic Challenge**.
 
+**[Live build-log dashboard →](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)** — real Sepolia transactions, agent wallets, and current RAMS mandate state.
+
 > Working title. Rename freely — nothing below depends on the name.
 
 ## The pitch in one paragraph
 
-A company's recurring revenue (subscription income, a SaaS contract, a royalty stream) is tokenized on Brickken as an investable asset. An **Issuer Agent** pays for its own onboarding over x402, registers an on-chain identity (ERC-8004), and runs the asset's full lifecycle. It then grants two other agents **scoped, capped, revocable mandates** under Brickken's Regulated Agent Mandate Standard (RAMS / ERC-8226): an **Ops Agent** that may only execute dividend payouts up to a pre-set cap, and a **Compliance Agent** that may only freeze or revoke access — nothing else. When a compliance signal fires, the Compliance Agent acts on its own, and the mandate boundary is what stops it (or anyone else) from doing more than that.
+A company's recurring revenue (subscription income, a SaaS contract, a royalty stream) is tokenized on Brickken as an investable asset. An **Issuer Agent** funds itself from Brickken's BKN faucet and runs the asset's full lifecycle — tokenize, launch an offering, whitelist investors, mint. It then delegates authority to two other agents under Brickken's Regulated Agent Mandate Standard (RAMS / ERC-8226), each through a different real primitive: an **Ops Agent** gets a genuine RAMS **mandate**, scoped to moving the payment token up to a hard cap and nothing else; a **Compliance Agent** is approved as a RAMS **operator**, which lets it revoke the Ops Agent's mandate directly — and only that, no payout or mint authority at all.
 
-Nothing here is a human clicking buttons in a demo. Every step is an agent spending its own funds and acting inside an authority boundary it did not grant itself.
+Nothing here is a human clicking buttons in a demo. Every step is an agent acting inside an authority boundary it did not grant itself, enforced on-chain rather than by convention.
 
 ## Why this shape
 
 Brickken's own framing of the Agentic Challenge is specific: *"the agent calls the API and also pays for the call."* That means three things have to actually happen on camera, not just be described:
 
-1. An agent **funds itself** — pays 0.01 USDC over x402 to mint 100 BKN on Ethereum Sepolia, no human touching a faucet UI.
+1. An agent **funds itself** — claims 100 BKN from Brickken's Sepolia faucet with no human touching a faucet UI, then (target: see Status) spends that same BKN via x402 to pay for a RAMS operation, closing the loop on its own funds rather than a human's.
 2. An agent's authority is **delegated, bounded, and revocable** via a RAMS mandate — not a shared private key, not a role flag in a database.
 3. A **compliance action executes autonomously**, from a trigger, inside that mandate boundary — and is provably unable to exceed it.
 
@@ -40,12 +42,12 @@ flowchart TB
         IA -->|mintToken| MINT[Investor allocations]
     end
 
-    subgraph mandates["3. RAMS-delegated agents"]
-        IA -->|grantMandate: payouts <= cap| OA[Ops Agent]
-        IA -->|setOperator: revoke authority| CA[Compliance Agent]
-        OA -->|dividendDistribution, bounded| T
+    subgraph mandates["3. RAMS (ERC-8226), Ethereum Sepolia"]
+        IA -->|grantMandate: transferFrom, capped| OA[Ops Agent]
+        IA -->|setOperator: approve| CA[Compliance Agent]
+        OA -->|execute, within cap| PT[Payment token]
         TRIG[Trigger engine\nrules / webhook] -->|compliance signal| CA
-        CA -->|revokeMandate / freeze, bounded| T
+        CA -->|revokeMandate| OA
     end
 ```
 
@@ -54,22 +56,25 @@ Full sequence detail, mandate scopes, and the specific fields each agent is and 
 ## Repo layout
 
 ```
-docs/                 concept, architecture, build plan, known API issues
-src/brickken/         Dapp API + Agentic API + x402 client wrappers
-src/agents/           issuer / ops / compliance agent logic
-src/rules/            compliance trigger engine
-scripts/              wallet setup, x402 faucet funding
+docs/                          architecture, use case, build plan, demo script, transaction log, known issues
+docs/brickken-docs-reference.txt   the complete real Brickken API docs, pulled verbatim for schema accuracy
+docs/evidence/                 raw prepare/send responses for every confirmed transaction
+site/                          the live build-log dashboard (published as this build's "try it live" page)
+scripts/tx.mjs                 the real prepare -> sign -> send -> poll runner; drives every Dapp/RAMS write
+scripts/faucet-bkn.mjs         claims BKN from Brickken's Sepolia faucet
+scripts/payloads/              every RAMS call, pre-staged and ready to run once each dependency clears
+src/rules/                     the compliance trigger engine (pure logic, chain-independent)
 ```
 
 ## Status
 
-✅ **Live on Ethereum Sepolia.** Real API key, real wallets, real confirmed transactions — see [`docs/transactions.md`](docs/transactions.md) for the full log with tx hashes. Verified end to end so far: tokenize → whitelist investor → mint. The `scripts/tx.mjs` prepare→sign→send→poll runner (verified against the live sandbox, schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt)) drives every write.
+✅ **Live on Ethereum Sepolia — 7 confirmed transactions.** Real API key, real wallets, real confirmed transactions, run through `scripts/tx.mjs` against the live sandbox with schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt). Full log with tx hashes: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
-Blocked on external funding/access, tracked in `docs/transactions.md` and `docs/build-plan.md`:
-- Dividend distribution needs test USDT in the issuer wallet (mock token's `mint()` is access-controlled).
-- ERC-8004 registration and RAMS mandates need Base Sepolia funding plus a Brickken-issued RAMS `identityRef` + executor.
+Verified end to end: tokenize → whitelist investor → mint → launch STO → claim BKN from the faucet → register the RAMS executor's `transferFrom` action → close the STO (rollback, since nobody invested — a legitimate part of the lifecycle, not a failure).
 
-The `src/` TypeScript scaffold (agents, clients) predates this live verification pass and still needs reconciling against the confirmed schemas in `docs/brickken-docs-reference.txt` — the shell scripts in `scripts/` are the currently-working path.
+Blocked, tracked with full detail in [`known-issues.md`](known-issues.md) and [`docs/build-plan.md`](docs/build-plan.md):
+- **RAMS mandate grant** — Brickken issued our principal's `identityRef` and a dedicated executor, but `GET /rams/compliance-status` still reports the principal as `IDENTITY_NOT_FOUND`. Escalated to Brickken; their own office hours (Sept 9) confirmed RAMS is mid-rework after other challengers hit issues. Every downstream RAMS call is pre-staged in `scripts/payloads/`, ready to fire the moment this clears.
+- **Dividend-style payout** needs test USDT in the issuer wallet — the mock token's `mint()` is access-controlled, requested from Brickken directly.
 
 ## Judging alignment
 
