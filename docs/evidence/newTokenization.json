@@ -10,7 +10,9 @@
   "sent": {
     "success": true,
     "transactionHash": "0xb764cd03f8590ad5381a4223e715c4b50201f0a2345a511eed8940bf84a79b45",
-    "tokenContractAddress": "0x14c0f58b4131dbcc95c6ef61683008db67ab3db9",
+    "tokenContractAddress": "0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c",
+    "escrowContractAddress": "0x14c0f58b4131dbcc95c6ef61683008db67ab3db9",
+    "_correction": "tokenContractAddress and escrowContractAddress were swapped when this file was first written (2026-09-07); corrected 2026-09-11 against GET /get-tokenizer-info. See known-issues.md.",
     "info": {
       "id": "6e365a30-6f1b-4f88-9e97-4697be0980ef",
       "chainId": "aa36a7",

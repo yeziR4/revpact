@@ -75,6 +75,18 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** none available — this is a 500 inside Brickken's own prepare logic before it reaches any of our request fields; no client-side change can route around it.
 - **Reported to Brickken team:** yes, 2026-09-10. **Fixed the same day**: the original dedicated executor (`0xE9832b090fBaEe59Bb26F2394448cfF49a6B87D7`) had the broken `isFrozen` path; Brickken issued a replacement (`0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b`) bound to the same AgentMandate registry, already holding `RECORDER_ROLE`. Re-ran `ramsSetExecutorAction` and the token `approve` against the new executor, and `ramsExecute` worked immediately — full sequence (within-cap execute, over-cap rejection, revoke, post-revoke rejection) all confirmed the same session. See `docs/transactions.md`.
 
+### RVP1 token address and escrow address were swapped in our own docs — our bug, not Brickken's. Corrected 2026-09-11.
+
+- **Method / endpoint:** not an API issue — a transcription error made writing up the `newTokenization` response into `docs/evidence/newTokenization.json` on 2026-09-07.
+- **Date hit:** 2026-09-07 (introduced). **Found:** 2026-09-11, while building the dashboard's live-balance read against the token contract directly.
+- **Request (redacted):** direct `eth_call` reads (`decimals()`, `balanceOf(address)`) against `0x14c0f58b4131dbcc95c6ef61683008db67ab3db9`, the address every doc and the dashboard had labeled "RVP1 token contract."
+- **Observed response / error:** both calls reverted — not the behavior of a live, deployed ERC-20 token contract.
+- **Root cause:** when `newTokenization`'s response was first hand-copied into `docs/evidence/newTokenization.json`, the `tokenContractAddress` and `escrowContractAddress` fields were swapped. `0xc5D2dA1d47B9A313c645e08B2fdbcdda7e00055c` is the actual RVP1 token (confirmed: `decimals()` → 18, `balanceOf(investor)` → the expected ~500e18 raw); `0x14c0f58b4131dbcc95c6ef61683008db67ab3db9` is the escrow contract, which doesn't expose `decimals()`/`balanceOf` the same way. The wrong label then propagated into `docs/transactions.md` and the dashboard's "RVP1 on Etherscan" link.
+- **How we found it:** the two reverted reads didn't match a live token contract's behavior, which prompted checking the original raw API response instead of trusting the copied-over evidence file.
+- **Consequence:** the dashboard's Etherscan link for the token pointed at the escrow contract instead of the token for several days; no transaction was ever sent to the wrong address (every `tx.mjs` write correctly used Brickken's `prepare-transactions` response fields, not the hand-copied evidence file) — this was a documentation/display bug only, not a funds-at-risk bug.
+- **Workaround used:** corrected `docs/evidence/newTokenization.json`, `docs/transactions.md`, and the dashboard (`site/index.html` / `docs/index.html`) to the verified addresses, with the swap and correction noted inline rather than silently edited.
+- **Reported to Brickken team:** no — our own transcription error, not theirs.
+
 ## Template for entries found during this build
 
 ```
