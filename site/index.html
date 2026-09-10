@@ -8,7 +8,6 @@
     --text: #1C1A16;
     --text-dim: #6B6558;
     --accent: #B9791F;
-    --accent-ink: #FFFFFF;
     --accent-2: #2E6E93;
     --success: #2E7D5B;
     --success-bg: #E6F1EB;
@@ -16,149 +15,137 @@
     --critical-bg: #F7E7E7;
     --pending: #5B6B8C;
     --pending-bg: #EAECF2;
+    --line: #C9BFA9;
     --shadow: 0 1px 2px rgba(28,26,22,0.06), 0 8px 24px -12px rgba(28,26,22,0.18);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0D1117;
-      --surface: #151B24;
-      --surface-2: #1B2230;
-      --border: #262E3D;
-      --text: #E8EAF0;
-      --text-dim: #8890A0;
-      --accent: #E8A33D;
-      --accent-ink: #1C1406;
-      --accent-2: #6FB6E0;
-      --success: #5CC79A;
-      --success-bg: #12291F;
-      --critical: #E5787B;
-      --critical-bg: #2E1518;
-      --pending: #93A3C7;
-      --pending-bg: #171C2A;
+      --bg: #0D1117; --surface: #151B24; --surface-2: #1B2230; --border: #262E3D;
+      --text: #E8EAF0; --text-dim: #8890A0;
+      --accent: #E8A33D; --accent-2: #6FB6E0;
+      --success: #5CC79A; --success-bg: #12291F;
+      --critical: #E5787B; --critical-bg: #2E1518;
+      --pending: #93A3C7; --pending-bg: #171C2A;
+      --line: #33394A;
       --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -14px rgba(0,0,0,0.6);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0D1117;
-    --surface: #151B24;
-    --surface-2: #1B2230;
-    --border: #262E3D;
-    --text: #E8EAF0;
-    --text-dim: #8890A0;
-    --accent: #E8A33D;
-    --accent-ink: #1C1406;
-    --accent-2: #6FB6E0;
-    --success: #5CC79A;
-    --success-bg: #12291F;
-    --critical: #E5787B;
-    --critical-bg: #2E1518;
-    --pending: #93A3C7;
-    --pending-bg: #171C2A;
+    --bg: #0D1117; --surface: #151B24; --surface-2: #1B2230; --border: #262E3D;
+    --text: #E8EAF0; --text-dim: #8890A0;
+    --accent: #E8A33D; --accent-2: #6FB6E0;
+    --success: #5CC79A; --success-bg: #12291F;
+    --critical: #E5787B; --critical-bg: #2E1518;
+    --pending: #93A3C7; --pending-bg: #171C2A;
+    --line: #33394A;
     --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -14px rgba(0,0,0,0.6);
   }
 
   * { box-sizing: border-box; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size: 15px;
-    line-height: 1.55;
-    margin: 0;
+    font-size: 15px; line-height: 1.55; margin: 0;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 56px 24px 90px; }
   a { color: var(--accent-2); }
-
-  code, .mono, .addr, .hash, .num { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
-
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
   h1, h2, h3 { font-family: "Newsreader", Georgia, serif; text-wrap: balance; margin: 0; }
 
-  /* ---------- Header ---------- */
-  header.top { display: flex; flex-direction: column; gap: 18px; padding-bottom: 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
-  .eyebrow { font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
-  .title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  h1 { font-size: 40px; font-weight: 600; font-style: italic; }
-  .tagline { color: var(--text-dim); font-size: 16px; max-width: 60ch; margin-top: 6px; }
-  .meta-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .chip {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 500;
+    padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500;
     border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim);
   }
-  .chip.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .chip.ok { color: var(--success); background: var(--success-bg); border-color: transparent; }
   .chip.warn { color: var(--critical); background: var(--critical-bg); border-color: transparent; }
-  .chip.info { color: var(--accent-2); background: var(--surface-2); }
-  .links { display: flex; gap: 16px; font-size: 13.5px; }
 
-  /* ---------- Stat tiles ---------- */
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px; }
-  .stat {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 18px; box-shadow: var(--shadow);
-    display: flex; flex-direction: column; gap: 6px;
+  /* ---------- Hero ---------- */
+  .eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
+  h1.claim {
+    font-size: 52px; font-weight: 600; font-style: italic; line-height: 1.08;
+    margin: 14px 0 20px; max-width: 15ch;
   }
-  .stat .label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-dim); font-weight: 500; }
-  .stat .value { font-size: 27px; font-weight: 600; font-family: "IBM Plex Mono", monospace; }
-  .stat .sub { font-size: 12.5px; color: var(--text-dim); }
-  .stat.accent .value { color: var(--accent); }
+  h1.claim .kill { color: var(--critical); }
+  .subhead { font-size: 17px; color: var(--text-dim); max-width: 56ch; margin-bottom: 26px; }
+  .status-rail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 22px; margin-bottom: 40px; border-bottom: 1px solid var(--border); }
+  .status-rail .sep { color: var(--border); }
+  .status-rail .links { margin-left: auto; display: flex; gap: 16px; font-size: 13px; }
+  @media (max-width: 640px) { .status-rail .links { margin-left: 0; width: 100%; padding-top: 8px; } h1.claim { font-size: 38px; } }
 
-  /* ---------- Sections ---------- */
-  section { margin-bottom: 40px; }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
-  h2 { font-size: 21px; font-weight: 600; }
-  .section-note { font-size: 13px; color: var(--text-dim); }
+  section { margin-bottom: 52px; }
+  .kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  h2 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+  .section-intro { color: var(--text-dim); font-size: 14px; max-width: 62ch; margin-bottom: 24px; }
 
-  /* ---------- Agent cards ---------- */
-  .agents { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-  .agent-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px; display: flex; flex-direction: column; gap: 9px; box-shadow: var(--shadow);
+  /* ---------- The sequence (hero centerpiece) ---------- */
+  .sequence { position: relative; padding-left: 32px; }
+  .sequence::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .seq-step { position: relative; padding-bottom: 28px; }
+  .seq-step:last-child { padding-bottom: 0; }
+  .seq-node {
+    position: absolute; left: -32px; top: 2px; width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
+    border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--node-color, var(--pending));
+    background: var(--node-color, var(--pending)); color: var(--bg);
   }
-  .agent-card .role { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--accent-2); }
-  .agent-card .name { font-size: 15.5px; font-weight: 600; }
-  .agent-card .addr { font-size: 12px; color: var(--text-dim); word-break: break-all; }
-  .agent-card .authority { font-size: 13px; color: var(--text-dim); }
-  .agent-card .bottom-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 6px; border-top: 1px solid var(--border); }
-  .agent-card .balance { font-size: 12.5px; }
+  .seq-step.grant .seq-node { --node-color: var(--pending); }
+  .seq-step.ok .seq-node { --node-color: var(--success); }
+  .seq-step.no .seq-node { --node-color: var(--critical); }
+  .seq-step.revoke .seq-node { --node-color: var(--accent-2); }
+  .seq-verb { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+  .seq-step.ok .seq-verb { color: var(--success); }
+  .seq-step.no .seq-verb { color: var(--critical); }
+  .seq-step.revoke .seq-verb { color: var(--accent-2); }
+  .seq-step.grant .seq-verb { color: var(--text-dim); }
+  .seq-title { font-size: 16.5px; font-weight: 600; margin: 3px 0 5px; }
+  .seq-detail { font-size: 13.5px; color: var(--text-dim); max-width: 60ch; }
+  .seq-detail code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  .seq-proof { margin-top: 8px; font-size: 12.5px; }
+  .seq-proof a { font-family: "IBM Plex Mono", monospace; }
+  .seq-proof .no-tx { color: var(--text-dim); font-style: italic; }
 
-  /* ---------- RAMS diagram + status ---------- */
-  .rams-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 20px; align-items: start; }
-  @media (max-width: 760px) { .rams-grid { grid-template-columns: 1fr; } }
+  /* ---------- Mechanism (supporting) ---------- */
+  .mech-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 20px; align-items: start; }
+  @media (max-width: 760px) { .mech-grid { grid-template-columns: 1fr; } }
   figure { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; box-shadow: var(--shadow); }
   figure svg { width: 100%; height: auto; overflow: visible; }
   figcaption { font-size: 12.5px; color: var(--text-dim); margin-top: 10px; }
-  .rams-status { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; }
-  .kv { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 7px 0; border-bottom: 1px solid var(--border); }
-  .kv:last-child { border-bottom: none; }
+  .kv-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 9px; }
+  .kv { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+  .kv:last-child { border-bottom: none; padding-bottom: 0; }
   .kv .k { color: var(--text-dim); }
   .kv .v { text-align: right; }
 
-  /* ---------- Tx table ---------- */
-  .tx-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
-  table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 13.5px; min-width: 640px; }
-  thead th {
-    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
-    color: var(--text-dim); background: var(--surface-2); padding: 10px 14px; border-bottom: 1px solid var(--border);
-  }
-  tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  /* ---------- Cast ---------- */
+  .cast { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .cast-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 15px; box-shadow: var(--shadow); }
+  .cast-card .role { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--accent-2); }
+  .cast-card .name { font-size: 15px; font-weight: 600; margin: 3px 0 6px; }
+  .cast-card .addr { font-size: 11.5px; color: var(--text-dim); margin-bottom: 8px; }
+  .cast-card .power { font-size: 12.5px; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 8px; }
+  .cast-card .power b { color: var(--text); font-weight: 600; }
+
+  /* ---------- Audit trail (de-emphasized) ---------- */
+  .trail-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 12.5px; min-width: 600px; }
+  thead th { text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: var(--text-dim); background: var(--surface-2); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text-dim); }
   tbody tr:last-child td { border-bottom: none; }
-  td.step { color: var(--text-dim); }
-  td.method code { background: var(--surface-2); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-  td.hash a { font-size: 12px; }
+  tbody td:nth-child(2) { color: var(--text); }
+  td.step { font-family: "IBM Plex Mono", monospace; }
+  td.method code { font-size: 11.5px; }
+  td.hash a { font-size: 11.5px; }
 
-  /* ---------- Blockers ---------- */
-  .blockers { display: flex; flex-direction: column; gap: 10px; }
-  .blocker {
-    display: flex; gap: 12px; padding: 13px 15px; border-radius: 8px;
-    background: var(--pending-bg); border: 1px solid var(--border);
-  }
-  .blocker .tag { flex-shrink: 0; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--pending); padding-top: 2px; width: 60px; }
-  .blocker .tag.resolved { color: var(--success); }
-  .blocker p { margin: 0; font-size: 13.5px; }
-  .blocker p .who { color: var(--text-dim); }
+  /* ---------- Status ---------- */
+  .status-list { display: flex; flex-direction: column; gap: 8px; }
+  .status-row { display: flex; gap: 10px; padding: 10px 13px; border-radius: 7px; background: var(--surface-2); font-size: 13px; }
+  .status-row .mark { flex-shrink: 0; font-weight: 700; }
+  .status-row.resolved .mark { color: var(--success); }
+  .status-row.open .mark { color: var(--pending); }
 
-  footer { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 48px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12.5px; color: var(--text-dim); }
+  footer { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 52px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-dim); }
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -166,104 +153,74 @@
 
 <div class="wrap">
 
-  <header class="top">
-    <div class="eyebrow">Build with Brickken &mdash; Agentic Challenge</div>
-    <div class="title-row">
-      <div>
-        <h1>RevPact</h1>
-        <div class="tagline">A self-funding agent mesh that tokenizes recurring revenue on Brickken, then delegates bounded, revocable authority under RAMS (ERC&#8209;8226) &mdash; one agent that can only pay, one that can only kill.</div>
-      </div>
-      <div class="meta-row">
-        <span class="chip dot ok">Ethereum Sepolia</span>
-        <span class="chip" id="deadline-chip">calculating&hellip;</span>
-      </div>
-    </div>
+  <div class="eyebrow">Build with Brickken &mdash; Agentic Challenge</div>
+  <h1 class="claim">An agent that can only pay. An agent that can only <span class="kill">kill</span>.</h1>
+  <div class="subhead">RevPact tokenizes recurring revenue on Brickken, then hands two AI agents authority bounded by a smart contract instead of a policy document &mdash; and proves it, live, on Ethereum Sepolia. Below is the sequence that proves it, not a description of it.</div>
+
+  <div class="status-rail">
+    <span class="chip ok">● Ethereum Sepolia</span>
+    <span class="chip">16 real calls</span>
+    <span class="chip" id="deadline-chip">calculating&hellip;</span>
     <div class="links">
-      <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repository &rarr;</a>
-      <a href="https://github.com/yeziR4/revpact/blob/main/docs/transactions.md" target="_blank" rel="noopener">Full transaction log &rarr;</a>
-      <a href="https://github.com/yeziR4/revpact/blob/main/known-issues.md" target="_blank" rel="noopener">Known issues &rarr;</a>
-      <a href="https://sepolia.etherscan.io/address/0x14c0f58b4131dbcc95c6ef61683008db67ab3db9" target="_blank" rel="noopener">RVP1 on Etherscan &rarr;</a>
+      <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repo &rarr;</a>
+      <a href="https://github.com/yeziR4/revpact/blob/main/docs/transactions.md" target="_blank" rel="noopener">Tx log &rarr;</a>
+      <a href="https://sepolia.etherscan.io/address/0x14c0f58b4131dbcc95c6ef61683008db67ab3db9" target="_blank" rel="noopener">RVP1 &rarr;</a>
     </div>
-  </header>
-
-  <section class="stats">
-    <div class="stat accent">
-      <div class="label">Confirmed transactions</div>
-      <div class="value">14</div>
-      <div class="sub">+2 clean contract-level rejections</div>
-    </div>
-    <div class="stat">
-      <div class="label">RVP1 minted</div>
-      <div class="value">500</div>
-      <div class="sub">to one whitelisted investor</div>
-    </div>
-    <div class="stat">
-      <div class="label">RAMS lifecycle</div>
-      <div class="value" style="font-size:18px; color: var(--success);">Closed</div>
-      <div class="sub">grant &rarr; execute &rarr; reject &rarr; revoke</div>
-    </div>
-    <div class="stat">
-      <div class="label">Days to deadline</div>
-      <div class="value" id="days-left">&mdash;</div>
-      <div class="sub">Sep 17, 23:59 CET</div>
-    </div>
-  </section>
+  </div>
 
   <section>
-    <div class="section-head">
-      <h2>Agents &amp; wallets</h2>
-      <div class="section-note">Every agent signs with its own key &mdash; authority is separated by wallet, not just by role name.</div>
-    </div>
-    <div class="agents">
-      <div class="agent-card">
-        <div class="role">Principal &middot; Issuer Agent</div>
-        <div class="name">Runs the asset lifecycle</div>
-        <div class="addr">0x7284&hellip;35cBA</div>
-        <div class="authority">Tokenizes RVP1, launches &amp; closes the STO, holds mint/burn authority, grants mandates. Nothing below can mint or burn.</div>
-        <div class="bottom-row">
-          <span class="balance">0.045 ETH &middot; 100 BKN</span>
-          <span class="chip ok">active</span>
-        </div>
+    <div class="kicker">The whole point of this build</div>
+    <h2>Five moves. Watch the leash actually hold.</h2>
+    <div class="section-intro">Every step below happened in this order, on the real chain, in one working session &mdash; not staged, not simulated. The Ops Agent's authority is granted, tested, refused when it oversteps, cut off by a different agent entirely, and confirmed gone.</div>
+
+    <div class="sequence">
+      <div class="seq-step grant">
+        <div class="seq-node">1</div>
+        <div class="seq-verb">Grant</div>
+        <div class="seq-title">The Issuer delegates a bounded mandate</div>
+        <div class="seq-detail">Ops Agent (<code>0x5F7d&hellip;8B3dC</code>) may call <code>transferFrom</code> on the payment token &mdash; nothing else &mdash; up to 50 USDT per call, 100 USDT total. Enforced by the <code>AgentMandate</code> contract, not by application code.</div>
+        <div class="seq-proof"><a href="https://sepolia.etherscan.io/tx/0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc" target="_blank" rel="noopener">0x782b6cee&hellip;44adc &rarr;</a></div>
       </div>
-      <div class="agent-card">
-        <div class="role">Mandated &middot; Ops Agent</div>
-        <div class="name">Executes capped payouts</div>
-        <div class="addr">0x5F7d&hellip;8B3dC</div>
-        <div class="authority">Held a RAMS mandate: <code>transferFrom</code> on the payment token only, up to 50 USDT/tx, 100 USDT cumulative. Successfully authorized a within-cap transfer; a 999 USDT attempt was refused by the mandate itself.</div>
-        <div class="bottom-row">
-          <span class="balance">0.05 Sepolia ETH</span>
-          <span class="chip warn">mandate revoked</span>
-        </div>
+
+      <div class="seq-step ok">
+        <div class="seq-node">2</div>
+        <div class="seq-verb">Authorize</div>
+        <div class="seq-title">Ops requests 25 USDT &mdash; within the cap</div>
+        <div class="seq-detail">The mandate says yes. The call reaches the real ERC-20 <code>transferFrom</code> and only stops there, on an empty treasury &mdash; the one external dependency left (test USDT from Brickken), not a gap in the authority check.</div>
+        <div class="seq-proof"><a href="https://sepolia.etherscan.io/tx/0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61" target="_blank" rel="noopener">0x0482f0ba&hellip;fce61 &rarr;</a></div>
       </div>
-      <div class="agent-card">
-        <div class="role">Operator &middot; Compliance Agent</div>
-        <div class="name">Can revoke, nothing else</div>
-        <div class="addr">0x0F19&hellip;96D85</div>
-        <div class="authority">Approved by the principal as a RAMS operator: may call <code>revokeMandate</code> on the Ops Agent directly. No payout, mint, or burn authority at all — and used exactly that one power.</div>
-        <div class="bottom-row">
-          <span class="balance">0.05 Sepolia ETH</span>
-          <span class="chip ok">revoked the mandate ✓</span>
-        </div>
+
+      <div class="seq-step no">
+        <div class="seq-node">3</div>
+        <div class="seq-verb">Refuse</div>
+        <div class="seq-title">Ops requests 999 USDT &mdash; over the cap</div>
+        <div class="seq-detail">Refused before it ever reaches the chain. The contract's own words: <code>"mandate does not allow this execution: withinTransactionCap, withinCumulativeCap."</code> No gas spent proving a boundary that was never going to move.</div>
+        <div class="seq-proof"><span class="no-tx">rejected at prepare &mdash; no transaction, by design</span></div>
       </div>
-      <div class="agent-card">
-        <div class="role">Investor</div>
-        <div class="name">Holds the test allocation</div>
-        <div class="addr">0x2096&hellip;6D45D9</div>
-        <div class="authority">Whitelisted for RVP1, holds 500 tokens from a direct issuance mint. Distinct email identity from the tokenizer, as Brickken requires.</div>
-        <div class="bottom-row">
-          <span class="balance">500 RVP1</span>
-          <span class="chip ok">whitelisted</span>
-        </div>
+
+      <div class="seq-step revoke">
+        <div class="seq-node">4</div>
+        <div class="seq-verb">Revoke</div>
+        <div class="seq-title">The Compliance Agent kills the mandate</div>
+        <div class="seq-detail">Not the Issuer. Not a shared admin key. A third wallet (<code>0x0F19&hellip;96D85</code>), holding no payout power of its own, exercising the one authority it was ever given &mdash; on its own signature.</div>
+        <div class="seq-proof"><a href="https://sepolia.etherscan.io/tx/0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" target="_blank" rel="noopener">0xbf395482&hellip;bfef36 &rarr;</a></div>
+      </div>
+
+      <div class="seq-step no">
+        <div class="seq-node">5</div>
+        <div class="seq-verb">Refuse, again</div>
+        <div class="seq-title">Ops tries the identical, once-valid request</div>
+        <div class="seq-detail">The same 25 USDT call that worked in step 2, replayed exactly, is refused: <code>"mandate does not allow this execution: notRevoked."</code> Not frozen. Not paused. Gone &mdash; and the contract says so in those words.</div>
+        <div class="seq-proof"><span class="no-tx">rejected at prepare &mdash; no transaction, by design</span></div>
       </div>
     </div>
   </section>
 
   <section>
-    <div class="section-head">
-      <h2>RAMS: the mandate mechanism</h2>
-      <div class="section-note">ERC&#8209;8226, Ethereum Sepolia</div>
-    </div>
-    <div class="rams-grid">
+    <div class="kicker">How</div>
+    <h2>The mechanism behind the sequence</h2>
+    <div class="section-intro">RAMS (ERC&#8209;8226) separates two things most systems conflate: who is <em>allowed to act</em>, and who is <em>allowed to stop them</em>. The Issuer grants the first to Ops. It grants the second, separately, to Compliance.</div>
+    <div class="mech-grid">
       <figure role="img" aria-label="Diagram: the Issuer principal grants the Ops Agent a capped transferFrom mandate through the AgentExecutor, and separately approves the Compliance Agent as an operator who can revoke that mandate directly.">
         <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -272,33 +229,26 @@
             </marker>
           </defs>
           <g font-family="IBM Plex Mono, monospace" font-size="12" fill="currentColor">
-
-            <!-- Issuer / Principal -->
             <rect x="255" y="14" width="130" height="42" rx="6" fill="none" stroke="currentColor" stroke-width="1.4"/>
             <text x="320" y="31" text-anchor="middle" font-weight="600">Issuer</text>
             <text x="320" y="46" text-anchor="middle" fill-opacity="0.6" font-size="10.5">principal</text>
 
-            <!-- grant-mandate arrow to Executor -->
             <line x1="290" y1="56" x2="150" y2="112" stroke="currentColor" stroke-width="1.3" marker-end="url(#arrow)"/>
             <text x="175" y="80" font-size="10.5" fill-opacity="0.75">grantMandate</text>
             <text x="175" y="93" font-size="10.5" fill-opacity="0.75">(cap, transferFrom)</text>
 
-            <!-- setOperator arrow to Compliance -->
             <line x1="350" y1="56" x2="490" y2="112" stroke="currentColor" stroke-width="1.3" marker-end="url(#arrow)"/>
             <text x="410" y="80" font-size="10.5" fill-opacity="0.75">setOperator</text>
             <text x="410" y="93" font-size="10.5" fill-opacity="0.75">(approve)</text>
 
-            <!-- AgentExecutor -->
             <rect x="55" y="116" width="190" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.4"/>
             <text x="150" y="136" text-anchor="middle" font-weight="600">AgentExecutor</text>
             <text x="150" y="151" text-anchor="middle" fill-opacity="0.6" font-size="10.5">enforces cap + action</text>
 
-            <!-- Compliance card -->
             <rect x="410" y="116" width="175" height="46" rx="6" fill="none" stroke="currentColor" stroke-width="1.4"/>
             <text x="497" y="136" text-anchor="middle" font-weight="600">Compliance Agent</text>
             <text x="497" y="151" text-anchor="middle" fill-opacity="0.6" font-size="10.5">approved operator</text>
 
-            <!-- Ops Agent below executor -->
             <rect x="55" y="222" width="190" height="46" rx="6" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
             <text x="150" y="242" text-anchor="middle" font-weight="600" fill="var(--accent)">Ops Agent</text>
             <text x="150" y="257" text-anchor="middle" fill-opacity="0.6" font-size="10.5">the mandate's agent</text>
@@ -307,68 +257,75 @@
             <text x="158" y="196" font-size="10.5" fill-opacity="0.75">execute(target, data)</text>
             <text x="158" y="209" font-size="10.5" fill-opacity="0.75">&le; cap, or rejected</text>
 
-            <!-- Compliance -> revoke back to executor -->
             <line x1="470" y1="162" x2="215" y2="228" stroke="var(--critical)" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
             <text x="330" y="188" font-size="10.5" fill="var(--critical)">revokeMandate(Ops)</text>
             <text x="330" y="201" font-size="10.5" fill="var(--critical)" fill-opacity="0.85">on compliance trigger</text>
-
           </g>
         </svg>
-        <figcaption>Fully demonstrated on Sepolia: the Ops Agent's within-cap transfer was authorized, an over-cap attempt was refused by the mandate itself, the Compliance Agent then revoked the mandate on its own signature, and the identical transfer that worked a moment earlier was refused again &mdash; this time because the mandate no longer exists.</figcaption>
+        <figcaption>The two grants that make the five-step sequence possible: a capped mandate to Ops, a revoke-only operator approval to Compliance. Neither can do the other's job.</figcaption>
       </figure>
 
-      <div class="rams-status">
+      <div class="kv-box">
         <div class="kv"><span class="k">AgentMandate registry</span><span class="v mono">0xD68E&hellip;C26778e</span></div>
-        <div class="kv"><span class="k">Dedicated executor</span><span class="v mono">0xF626&hellip;8b65b</span></div>
+        <div class="kv"><span class="k">Executor</span><span class="v mono">0xF626&hellip;8b65b</span></div>
         <div class="kv"><span class="k">identityRef</span><span class="v mono">0xc60e&hellip;73a42e2</span></div>
-        <div class="kv"><span class="k"><code>transferFrom</code> action</span><span class="v"><span class="chip ok" style="padding:2px 8px;">registered</span></span></div>
-        <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok" style="padding:2px 8px;">COMPLIANT</span></span></div>
-        <div class="kv"><span class="k">25 USDT execute</span><span class="v"><span class="chip ok" style="padding:2px 8px;">authorized</span></span></div>
-        <div class="kv"><span class="k">999 USDT execute</span><span class="v"><span class="chip warn" style="padding:2px 8px;">rejected: cap</span></span></div>
-        <div class="kv"><span class="k">Revoke, by Compliance</span><span class="v"><span class="chip ok" style="padding:2px 8px;">confirmed</span></span></div>
-        <div class="kv"><span class="k">Post-revoke execute</span><span class="v"><span class="chip warn" style="padding:2px 8px;">rejected: revoked</span></span></div>
+        <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok">COMPLIANT</span></span></div>
+        <div class="kv"><span class="k">Mandate, final state</span><span class="v"><span class="chip warn">revoked</span></span></div>
       </div>
     </div>
   </section>
 
   <section>
-    <div class="section-head">
-      <h2>Confirmed on Sepolia</h2>
-      <div class="section-note">Every row is a real, mined transaction &mdash; click through to Etherscan.</div>
+    <div class="kicker">Who</div>
+    <h2>The cast</h2>
+    <div class="cast">
+      <div class="cast-card">
+        <div class="role">Principal</div>
+        <div class="name">Issuer Agent</div>
+        <div class="addr mono">0x7284&hellip;35cBA</div>
+        <div class="power">Runs the full lifecycle &mdash; tokenize, offer, whitelist, mint &mdash; and is the <b>only</b> wallet that can mint, burn, or grant authority to the other two.</div>
+      </div>
+      <div class="cast-card">
+        <div class="role">Mandated</div>
+        <div class="name">Ops Agent</div>
+        <div class="addr mono">0x5F7d&hellip;8B3dC</div>
+        <div class="power">Could move payment tokens, capped, while its mandate existed. <b>Cannot mint, whitelist, or act on any other asset</b> &mdash; and no longer has even that, since step 4.</div>
+      </div>
+      <div class="cast-card">
+        <div class="role">Operator</div>
+        <div class="name">Compliance Agent</div>
+        <div class="addr mono">0x0F19&hellip;96D85</div>
+        <div class="power">Holds exactly one power: revoke. <b>No payout, mint, or burn authority ever</b> &mdash; used its one power once, correctly.</div>
+      </div>
+      <div class="cast-card">
+        <div class="role">Investor</div>
+        <div class="name">Test allocation holder</div>
+        <div class="addr mono">0x2096&hellip;6D45D9</div>
+        <div class="power">Whitelisted, holds 500 RVP1 from a direct mint. A distinct identity from the issuer, as Brickken requires.</div>
+      </div>
     </div>
-    <div class="tx-table-wrap">
+  </section>
+
+  <section>
+    <div class="kicker">Everything else</div>
+    <h2>Full audit trail</h2>
+    <div class="section-intro">The five-step sequence above is the argument. This is the receipts &mdash; every real call this build made, in order, including the tokenization lifecycle that isn't the headline but still has to work.</div>
+    <div class="trail-wrap">
       <table>
-        <thead>
-          <tr><th>#</th><th>Method</th><th>What happened</th><th>Tx hash</th></tr>
-        </thead>
+        <thead><tr><th>#</th><th>Method</th><th>What happened</th><th>Proof</th></tr></thead>
         <tbody id="tx-body"></tbody>
       </table>
     </div>
   </section>
 
   <section>
-    <div class="section-head">
-      <h2>Status</h2>
-      <div class="section-note">Tracked in <code>known-issues.md</code>, updated as the build progresses</div>
-    </div>
-    <div class="blockers">
-      <div class="blocker">
-        <span class="tag resolved">Resolved</span>
-        <p><span class="who">RAMS principal eligibility</span> &mdash; a ComplianceProvider mismatch from a Brickken Sandbox redeployment; fixed Sep&nbsp;10.</p>
-      </div>
-      <div class="blocker">
-        <span class="tag resolved">Resolved</span>
-        <p><span class="who">RAMS executor bug</span> &mdash; the original dedicated executor couldn't read its own frozen status; Brickken issued a working replacement same day, full mandate lifecycle closed immediately after.</p>
-      </div>
-      <div class="blocker">
-        <span class="tag">Open</span>
-        <p><span class="who">Test USDT funding</span> &mdash; the sandbox payment token's <code>mint()</code> is access-controlled; the issuer wallet holds 0 USDT, which is the only thing standing between the authorized transfer above and an actual payout.</p>
-      </div>
-    </div>
+    <div class="kicker">Honesty</div>
+    <h2>Status</h2>
+    <div class="status-list" id="status-list"></div>
   </section>
 
   <footer>
-    <span>RevPact &middot; Build with Brickken, Agentic Challenge &middot; snapshot taken during active development, not a live chain feed</span>
+    <span>RevPact &middot; Build with Brickken, Agentic Challenge &middot; a build log, not a live chain feed</span>
     <span id="snapshot-time"></span>
   </footer>
 
@@ -381,22 +338,19 @@
     { step: 3, method: "mintToken", desc: "Minted 500 RVP1 to the investor", hash: "0x7e9bf59ffb887ac31efc275a7ab581938fcd08da17b13aa740d45675703736c6" },
     { step: 4, method: "faucet/bkn", desc: "Claimed 100 BKN for the issuer wallet", hash: "0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a" },
     { step: 5, method: "newSto", desc: "Launched the “RVP1 Genesis Offering” STO", hash: "0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13" },
-    { step: 6, method: "ramsSetExecutorAction", desc: "Registered transferFrom on our RAMS executor", hash: "0xf07cb7e83493346da3187c9a5c438d6973af9c37c4042954cef2f9b870d10412" },
+    { step: 6, method: "ramsSetExecutorAction", desc: "Registered transferFrom on the first executor", hash: "0xf07cb7e83493346da3187c9a5c438d6973af9c37c4042954cef2f9b870d10412" },
     { step: 7, method: "closeOffer", desc: "Closed the STO — rolled back, soft cap unmet", hash: "0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e" },
-    { step: 8, method: "ramsGrantMandate", desc: "Granted the Ops Agent's mandate — capped transferFrom", hash: "0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc" },
-    { step: 9, method: "ramsSetOperator", desc: "Approved the Compliance Agent as RAMS operator", hash: "0xda86ce2383536b248a7b2d3484d457de743e95073c100a1e44b1e3aa29b99f35" },
-    { step: 10, method: "approve", desc: "Approved the RAMS executor for 100 USDT", hash: "0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b" },
+    { step: 8, method: "ramsGrantMandate", desc: "Granted the Ops Agent's mandate (sequence step 1)", hash: "0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc" },
+    { step: 9, method: "ramsSetOperator", desc: "Approved the Compliance Agent as operator", hash: "0xda86ce2383536b248a7b2d3484d457de743e95073c100a1e44b1e3aa29b99f35" },
+    { step: 10, method: "approve", desc: "Approved the first executor for 100 USDT", hash: "0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b" },
     { step: 11, method: "ramsSetExecutorAction", desc: "Registered transferFrom on the replacement executor", hash: "0x0b8fa2554b8dbcc8bd635c3f864018359a3d10bae165f91ba4a3315f0f0b3f09" },
     { step: 12, method: "approve", desc: "Re-approved the replacement executor for 100 USDT", hash: "0xbd455969ee07c140ee39d84c47f840a2ce133009db1619dd0a093a5151040119" },
-    { step: 13, method: "ramsExecute", desc: "Ops Agent's within-cap transfer — mandate authorized it, reached the real transferFrom", hash: "0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61" },
-    { step: 15, method: "ramsRevokeMandate", desc: "Compliance Agent revoked the Ops Agent's mandate", hash: "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" }
+    { step: 13, method: "ramsExecute", desc: "Within-cap transfer, authorized (sequence step 2)", hash: "0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61" },
+    { step: 15, method: "ramsRevokeMandate", desc: "Compliance revokes the mandate (sequence step 4)", hash: "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" }
   ];
-
-  // Steps 14 and 16 aren't on-chain transactions -- the mandate rejected them
-  // before broadcast, which is the point. Rendered as their own rows below.
   const rejections = [
-    { step: 14, desc: "Over-cap execute attempt (999 USDT)", reason: "mandate does not allow this execution: withinTransactionCap, withinCumulativeCap" },
-    { step: 16, desc: "Same within-cap transfer, attempted again after the revoke", reason: "mandate does not allow this execution: notRevoked" }
+    { step: 14, desc: "Over-cap attempt, refused (sequence step 3)", reason: "withinTransactionCap, withinCumulativeCap" },
+    { step: 16, desc: "Post-revoke attempt, refused (sequence step 5)", reason: "notRevoked" }
   ];
 
   const tbody = document.getElementById("tx-body");
@@ -404,7 +358,7 @@
   for (const row of allRows) {
     const tr = document.createElement("tr");
     if (row.hash) {
-      const short = row.hash.slice(0, 10) + "…" + row.hash.slice(-6);
+      const short = row.hash.slice(0, 8) + "…" + row.hash.slice(-5);
       tr.innerHTML = `
         <td class="step">${row.step}</td>
         <td class="method"><code>${row.method}</code></td>
@@ -415,28 +369,38 @@
       tr.innerHTML = `
         <td class="step">${row.step}</td>
         <td class="method"><code>ramsExecute</code></td>
-        <td>${row.desc}<div class="section-note" style="margin-top:3px;">${row.reason}</div></td>
-        <td class="hash"><span class="chip warn" style="padding:2px 8px;">rejected, no tx</span></td>
+        <td>${row.desc}</td>
+        <td class="hash"><span class="mono" style="font-size:11.5px;">rejected: ${row.reason}</span></td>
       `;
     }
     tbody.appendChild(tr);
   }
 
+  const statuses = [
+    { state: "resolved", text: "<b>RAMS principal eligibility</b> — a ComplianceProvider mismatch from a Brickken Sandbox redeployment. Fixed Sep 10." },
+    { state: "resolved", text: "<b>RAMS executor bug</b> — the first dedicated executor couldn't read its own frozen status. Brickken replaced it same day; the full sequence above ran immediately after." },
+    { state: "open", text: "<b>Test USDT funding</b> — the sandbox payment token's mint() is access-controlled. The issuer wallet holds 0 USDT, which is the only thing standing between step 2's authorized transfer and an actual payout." }
+  ];
+  const statusList = document.getElementById("status-list");
+  for (const s of statuses) {
+    const row = document.createElement("div");
+    row.className = "status-row " + s.state;
+    row.innerHTML = `<span class="mark">${s.state === "resolved" ? "✓" : "○"}</span><span>${s.text}</span>`;
+    statusList.appendChild(row);
+  }
+
   function updateDeadline() {
-    const deadline = new Date("2026-09-17T21:59:00Z"); // 23:59 CET (UTC+2 in September)
-    const now = new Date();
-    const msLeft = deadline - now;
-    const daysLeft = Math.max(0, Math.ceil(msLeft / 86400000));
-    document.getElementById("days-left").textContent = daysLeft;
+    const deadline = new Date("2026-09-17T21:59:00Z");
+    const msLeft = deadline - new Date();
     const chip = document.getElementById("deadline-chip");
     if (msLeft > 0) {
       const d = Math.floor(msLeft / 86400000);
       const h = Math.floor((msLeft % 86400000) / 3600000);
       chip.textContent = `${d}d ${h}h to deadline`;
-      chip.className = "chip " + (d <= 3 ? "warn" : "info");
+      if (d <= 3) chip.classList.add("warn");
     } else {
       chip.textContent = "submission closed";
-      chip.className = "chip warn";
+      chip.classList.add("warn");
     }
   }
   updateDeadline();
