@@ -1,0 +1,72 @@
+{
+  "prepared": {
+    "transactions": [
+      {
+        "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+        "to": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+        "value": "0x00",
+        "nonce": 8,
+        "chainId": 11155111,
+        "data": "0x095ea7b3000000000000000000000000e9832b090fbaee59bb26f2394448cff49a6b87d70000000000000000000000000000000000000000000000000000000005f5e100",
+        "type": 2,
+        "maxPriorityFeePerGas": "1150000",
+        "maxFeePerGas": "1199440403",
+        "gasLimit": "0xc920"
+      }
+    ],
+    "info": {
+      "tokenizerEmail": "yezirhasan@gmail.com",
+      "tokenSymbol": "USDT",
+      "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "to": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604"
+    },
+    "txId": "0x61bc01d13e96ec7a7536eec42a9c166f6036ea33106e3e73a58e9cc50ba0e9c0"
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0x61bc01d13e96ec7a7536eec42a9c166f6036ea33106e3e73a58e9cc50ba0e9c0",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 8,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x477e0213"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0xc920"
+              },
+              "to": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0x095ea7b3000000000000000000000000e9832b090fbaee59bb26f2394448cff49a6b87d70000000000000000000000000000000000000000000000000000000005f5e100",
+              "accessList": [],
+              "hash": "0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b",
+              "v": 1,
+              "r": "0x2d8b835a15bc0d854838faa958156527ef1b5c48bd3b17ad1437e52309782f52",
+              "s": "0x2f6972984a490e5fc2af3e97f012e3920dc8cde437e6b58b69ed35591faae7f6",
+              "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

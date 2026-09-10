@@ -67,11 +67,11 @@ Kept intentionally simple so it's demonstrably real rather than theatrical:
 
 This can start as a script you POST to locally and graduate to something pulling from a real external signal (e.g. a sanctions-list check, a KYC-expiry timestamp) if time allows — the trigger's *source* matters less than the fact that the agent, not the operator, decides and executes.
 
-## Open verification items (do before first real call)
+## Status (2026-09-10)
 
-These are called out because they were inferred from public material, not read directly from `docs.brickken.com` (fetching it was blocked in the scaffolding environment):
-- Exact `/prepare-transactions` payload shape per method (field names, required vs optional) — verify each against the live API reference.
-- Exact RAMS endpoint/method names for grant / execute-under-mandate / revoke / extend (ERC-8226 names these `grantMandate`, `revokeMandate`, `extendMandate` at the contract level; confirm the Brickken API's method names match).
-- Exact x402 faucet endpoint and required headers/payment payload for the "0.01 USDC → 100 BKN" flow.
-- Whether CLI or MCP is the more direct path for the x402-metered calls versus hitting the Agentic API HTTP endpoints directly with a signed payment header.
-- The `approve` non-zero→non-zero allowance quirk and the `mintToken` treasury-address restriction, both reported by other participants in the programme's Discord — confirm current behavior before relying on either being fixed.
+Everything in this document is now verified against the live sandbox, not inferred — see `docs/transactions.md` for the full tx-hash-backed log. As of this update:
+
+- **Mandate granted and confirmed on-chain**: the Ops Agent (`0x5F7d…8B3dC`) holds a real RAMS mandate scoped to `transferFrom` on USDT, capped at 50 USDT/tx and 100 USDT cumulative.
+- **Operator approved and confirmed on-chain**: the Compliance Agent (`0x0F19…96D85`) can call `revokeMandate` on that mandate directly.
+- **Cap enforcement verified live**: `GET /rams/can-execute` — the mandate contract's own logic, not an app-side check — returns `allowed: true` for a 25 USDT request and `allowed: false` (both `withinTransactionCap` and `withinCumulativeCap` false) for a 999 USDT request, against the actual granted mandate.
+- **Still open**: an actual `execute` (moving real value) needs (1) the issuer to hold real USDT — 0 today, blocked on Brickken funding it — and (2) the Ops and Compliance wallets funded with a little Sepolia ETH to sign their own steps. Both tracked in `known-issues.md` / `docs/build-plan.md`.

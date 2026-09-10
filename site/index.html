@@ -188,7 +188,7 @@
   <section class="stats">
     <div class="stat accent">
       <div class="label">Confirmed transactions</div>
-      <div class="value">7</div>
+      <div class="value">10</div>
       <div class="sub">all client-signed, Sepolia sandbox</div>
     </div>
     <div class="stat">
@@ -198,8 +198,8 @@
     </div>
     <div class="stat">
       <div class="label">RAMS mandate</div>
-      <div class="value" style="font-size:18px; color: var(--critical);">Blocked</div>
-      <div class="sub">principal eligibility, Brickken-side</div>
+      <div class="value" style="font-size:18px; color: var(--success);">Active</div>
+      <div class="sub">cap enforcement verified on-chain</div>
     </div>
     <div class="stat">
       <div class="label">Days to deadline</div>
@@ -228,10 +228,10 @@
         <div class="role">Mandated &middot; Ops Agent</div>
         <div class="name">Executes capped payouts</div>
         <div class="addr">0x5F7d&hellip;8B3dC</div>
-        <div class="authority">Under a RAMS mandate: may call <code>transferFrom</code> on the payment token only, up to a hard cap. Cannot mint, whitelist, or touch any other asset.</div>
+        <div class="authority">Under a RAMS mandate: may call <code>transferFrom</code> on the payment token only, up to 50 USDT/tx, 100 USDT cumulative. Cannot mint, whitelist, or touch any other asset.</div>
         <div class="bottom-row">
           <span class="balance">awaiting gas</span>
-          <span class="chip warn">mandate pending</span>
+          <span class="chip ok">mandate active</span>
         </div>
       </div>
       <div class="agent-card">
@@ -241,7 +241,7 @@
         <div class="authority">Approved by the principal as a RAMS operator: may call <code>revokeMandate</code> on the Ops Agent directly. No payout, mint, or burn authority at all.</div>
         <div class="bottom-row">
           <span class="balance">awaiting gas</span>
-          <span class="chip warn">operator pending</span>
+          <span class="chip ok">operator approved</span>
         </div>
       </div>
       <div class="agent-card">
@@ -313,7 +313,7 @@
 
           </g>
         </svg>
-        <figcaption>The Issuer grants the Ops Agent a capped, action-scoped mandate through the executor, and separately approves the Compliance Agent as an operator &mdash; who can revoke that mandate directly the moment a compliance signal fires, without the Issuer in the loop.</figcaption>
+        <figcaption>Live on Sepolia as of this build: the Issuer granted the Ops Agent a capped, action-scoped mandate through the executor, and separately approved the Compliance Agent as an operator &mdash; who can revoke that mandate directly the moment a compliance signal fires, without the Issuer in the loop.</figcaption>
       </figure>
 
       <div class="rams-status">
@@ -321,8 +321,10 @@
         <div class="kv"><span class="k">Dedicated executor</span><span class="v mono">0xE983&hellip;a6B87D7</span></div>
         <div class="kv"><span class="k">identityRef</span><span class="v mono">0xc60e&hellip;73a42e2</span></div>
         <div class="kv"><span class="k"><code>transferFrom</code> action</span><span class="v"><span class="chip ok" style="padding:2px 8px;">registered</span></span></div>
-        <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip warn" style="padding:2px 8px;">IDENTITY_NOT_FOUND</span></span></div>
-        <div class="kv"><span class="k">Mandate status</span><span class="v"><span class="chip warn" style="padding:2px 8px;">none &mdash; blocked</span></span></div>
+        <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok" style="padding:2px 8px;">COMPLIANT</span></span></div>
+        <div class="kv"><span class="k">Mandate status</span><span class="v"><span class="chip ok" style="padding:2px 8px;">active</span></span></div>
+        <div class="kv"><span class="k">Cap check, 25 USDT</span><span class="v"><span class="chip ok" style="padding:2px 8px;">allowed</span></span></div>
+        <div class="kv"><span class="k">Cap check, 999 USDT</span><span class="v"><span class="chip warn" style="padding:2px 8px;">rejected on-chain</span></span></div>
       </div>
     </div>
   </section>
@@ -349,16 +351,16 @@
     </div>
     <div class="blockers">
       <div class="blocker">
-        <span class="tag">Brickken&nbsp;side</span>
-        <p><span class="who">RAMS principal eligibility</span> &mdash; <code>compliance-status</code> still returns <code>IDENTITY_NOT_FOUND</code> for our principal against the identityRef Brickken issued. Escalated; Brickken's own office hours (Sep&nbsp;9) confirmed RAMS is mid-rework after other challengers hit issues.</p>
+        <span class="tag">Resolved</span>
+        <p><span class="who">RAMS principal eligibility</span> &mdash; was blocked on a ComplianceProvider mismatch from a Brickken Sandbox redeployment; fixed by Brickken on Sep&nbsp;10. Mandate and operator approval both confirmed on-chain the same day.</p>
       </div>
       <div class="blocker">
         <span class="tag">Brickken&nbsp;side</span>
-        <p><span class="who">Test USDT funding</span> &mdash; the sandbox payment token's <code>mint()</code> is access-controlled; the issuer wallet holds 0 USDT until Brickken funds it, which blocks a real dividend-style payout.</p>
+        <p><span class="who">Test USDT funding</span> &mdash; the sandbox payment token's <code>mint()</code> is access-controlled; the issuer wallet holds 0 USDT until Brickken funds it, which blocks an actual value-moving <code>execute</code>.</p>
       </div>
       <div class="blocker">
         <span class="tag">Our&nbsp;side</span>
-        <p><span class="who">Ops &amp; Compliance gas</span> &mdash; both wallets need a little Sepolia ETH before they can sign their own steps (<code>execute</code> and <code>revokeMandate</code> aren't relayable through the issuer).</p>
+        <p><span class="who">Ops &amp; Compliance gas</span> &mdash; both wallets still need a little Sepolia ETH before they can sign their own steps (<code>execute</code> and <code>revokeMandate</code> aren't relayable through the issuer).</p>
       </div>
     </div>
   </section>
@@ -378,7 +380,10 @@
     { step: 4, method: "faucet/bkn", desc: "Claimed 100 BKN for the issuer wallet", hash: "0x26c16c3827c5b44d4a13a4ab6e8395e77af7ddbcafc1ecf74ba419bac298359a" },
     { step: 5, method: "newSto", desc: "Launched the “RVP1 Genesis Offering” STO", hash: "0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13" },
     { step: 6, method: "ramsSetExecutorAction", desc: "Registered transferFrom on our RAMS executor", hash: "0xf07cb7e83493346da3187c9a5c438d6973af9c37c4042954cef2f9b870d10412" },
-    { step: 7, method: "closeOffer", desc: "Closed the STO — rolled back, soft cap unmet", hash: "0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e" }
+    { step: 7, method: "closeOffer", desc: "Closed the STO — rolled back, soft cap unmet", hash: "0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e" },
+    { step: 8, method: "ramsGrantMandate", desc: "Granted the Ops Agent's mandate — capped transferFrom", hash: "0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc" },
+    { step: 9, method: "ramsSetOperator", desc: "Approved the Compliance Agent as RAMS operator", hash: "0xda86ce2383536b248a7b2d3484d457de743e95073c100a1e44b1e3aa29b99f35" },
+    { step: 10, method: "approve", desc: "Approved the RAMS executor for 100 USDT", hash: "0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b" }
   ];
 
   const tbody = document.getElementById("tx-body");

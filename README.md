@@ -68,13 +68,13 @@ src/rules/                     the compliance trigger engine (pure logic, chain-
 
 ## Status
 
-✅ **Live on Ethereum Sepolia — 7 confirmed transactions.** Real API key, real wallets, real confirmed transactions, run through `scripts/tx.mjs` against the live sandbox with schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt). Full log with tx hashes: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **Live on Ethereum Sepolia — 10 confirmed transactions, RAMS mandate active.** Real API key, real wallets, real confirmed transactions, run through `scripts/tx.mjs` against the live sandbox with schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt). Full log with tx hashes: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
-Verified end to end: tokenize → whitelist investor → mint → launch STO → claim BKN from the faucet → register the RAMS executor's `transferFrom` action → close the STO (rollback, since nobody invested — a legitimate part of the lifecycle, not a failure).
+Verified end to end: tokenize → whitelist investor → mint → launch STO → claim BKN from the faucet → close the STO (rollback, since nobody invested) → **register the RAMS executor's `transferFrom` action → grant the Ops Agent's mandate → approve the Compliance Agent as operator → approve the executor on USDT**. The mandate's cap enforcement is verified live against the real contract: `GET /rams/can-execute` returns `allowed: true` for a 25 USDT request and `allowed: false` for a 999 USDT one, against the actual granted mandate — not an app-side guess.
 
-Blocked, tracked with full detail in [`known-issues.md`](known-issues.md) and [`docs/build-plan.md`](docs/build-plan.md):
-- **RAMS mandate grant** — Brickken issued our principal's `identityRef` and a dedicated executor, but `GET /rams/compliance-status` still reports the principal as `IDENTITY_NOT_FOUND`. Escalated to Brickken; their own office hours (Sept 9) confirmed RAMS is mid-rework after other challengers hit issues. Every downstream RAMS call is pre-staged in `scripts/payloads/`, ready to fire the moment this clears.
-- **Dividend-style payout** needs test USDT in the issuer wallet — the mock token's `mint()` is access-controlled, requested from Brickken directly.
+Two things still open, tracked in [`known-issues.md`](known-issues.md) and [`docs/build-plan.md`](docs/build-plan.md):
+- **A real `execute`** (moving actual value under the mandate) needs the issuer to hold test USDT — 0 today, mock token's `mint()` is access-controlled, requested from Brickken.
+- **Ops and Compliance wallets need Sepolia ETH** to sign their own steps (`execute`, `revokeMandate`) — neither is relayable through the issuer.
 
 ## Judging alignment
 

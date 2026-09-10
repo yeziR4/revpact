@@ -41,15 +41,24 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** redesigned the Compliance Agent around `ramsSetOperator` + `ramsRevokeMandate` (fully self-serviceable once the principal is set up); treated `freezeAgent` as an optional stretch addition pending Brickken granting `ENFORCER_ROLE`, not a dependency of the core demo. See `docs/architecture.md`.
 - **Reported to Brickken team:** not a bug — this is the documented design, we just read it wrong on the first pass.
 
-### `grant-principal` confirmation didn't match live `compliance-status`
+### `grant-principal` confirmation didn't match live `compliance-status` — RESOLVED
 
 - **Method / endpoint:** `GET /rams/compliance-status`, `POST /prepare-transactions` (`ramsGrantMandate`).
-- **Date hit:** 2026-09-09.
+- **Date hit:** 2026-09-09. **Resolved:** 2026-09-10, by Brickken.
 - **Request (redacted):** `compliance-status?chainId=11155111&principal=<issuer>&identityRef=<value Brickken sent>`, against the documented default ComplianceProvider (`0xa90D2503D5D9b80ECC27856Ff76F892B8C02f278`).
 - **Observed response / error:** `{"eligible":false,"reason":"IDENTITY_NOT_FOUND","reasonCode":6}` — both from the read endpoint directly and as the failure reason on `ramsGrantMandate`. Reproduced identically across two attempts, with and without an explicit `complianceProvider` field on the grant request, and with both decimal and hex `chainId`.
-- **Root cause (if known):** unclear — the Brickken team's setup message (identityRef + dedicated `AgentExecutor`, `RECORDER_ROLE` confirmed) describes a state the read endpoint doesn't yet reflect. Possibly a `grant-principal` transaction that hasn't landed/confirmed yet, or a provider-address mismatch on their side.
-- **Workaround used:** none yet — escalated back to Brickken with the exact repro (see message logged in this session) rather than guessing further. Everything *not* gated on principal eligibility worked immediately: `ramsSetExecutorAction` for `transferFrom` on our dedicated executor confirmed on the first try.
-- **Reported to Brickken team:** yes, 2026-09-09, with the exact query and response above.
+- **Root cause (confirmed by Brickken):** a Sandbox redeployment had registered our principal against a *newer* ComplianceProvider contract, while the Sandbox default (the address this API queries by default) still pointed at the older, previously-configured one — so the read was correctly reporting "never heard of you" against a contract that genuinely had never heard of us. Not a mistake on our side, and not something we could have discovered without Brickken checking their own deployment state.
+- **Workaround used:** none needed — Brickken registered the principal on both ComplianceProvider contracts under the same `identityRef`, so it now resolves either way. `ramsGrantMandate` and `ramsSetOperator` both succeeded immediately afterward (real fields still needed an explicit `principal` in the body even in direct-signed mode — see the field-name note below).
+- **Reported to Brickken team:** yes, 2026-09-09; fixed and confirmed 2026-09-10.
+
+### RAMS write methods need an explicit `principal` even in direct mode
+
+- **Method / endpoint:** `ramsGrantMandate`, `ramsSetOperator`.
+- **Date hit:** 2026-09-10.
+- **Observed response / error:** `"principal is required and must be a valid EVM address"` on the first attempt of each, despite `signerAddress` (the wallet actually signing) already being the principal.
+- **Root cause:** the docs describe two authorization modes — direct (`signerAddress` is the principal, `signature` omitted) and EIP-712 signature (any sender, explicit `principal` + `signature`) — but don't make clear that `principal` is a required body field in *both* modes, not inferred from `signerAddress` in the direct case.
+- **Workaround used:** always pass `principal` explicitly, matching `signerAddress`, even in direct mode.
+- **Reported to Brickken team:** no — minor documentation gap, not worth a support round-trip; noted here for the next person.
 
 ## Template for entries found during this build
 

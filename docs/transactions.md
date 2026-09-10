@@ -11,6 +11,19 @@ Real, verifiable transactions produced by this build. Chain: Ethereum Sepolia un
 | 5 | Launch STO | `newSto` | [`0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13`](https://sepolia.etherscan.io/tx/0xf140ee34eb1ac047e5f1292334075fe83eaff2043c01034604382ec8b928cb13) | "RVP1 Genesis Offering", 500 RVP1 offered, soft cap 10 USDT / hard cap 500 USDT, ~15 min window. No investor has funded USDT yet, so this will finalize into rollback unless that's resolved before `endDate` — a legitimate part of the lifecycle either way. |
 | 6 | Register `transferFrom` action on our RAMS executor | `ramsSetExecutorAction` | [`0xf07cb7e83493346da3187c9a5c438d6973af9c37c4042954cef2f9b870d10412`](https://sepolia.etherscan.io/tx/0xf07cb7e83493346da3187c9a5c438d6973af9c37c4042954cef2f9b870d10412) | Executor `0xE9832b090fBaEe59Bb26F2394448cfF49a6B87D7`, selector `0x23b872dd`, `hasAmount: true`, `amountIndex: 2`. |
 | 7 | Close the STO | `closeOffer` | [`0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e`](https://sepolia.etherscan.io/tx/0x7a45bc7d90b31e921ab34ece9583c7c82eca5e7f83e71a2238801aae3d53e41e) | Finalized after `endDate` passed with nobody invested — resolves into **rollback** (soft cap of 10 USDT not reached). Honest demonstration of the rollback path, not a failure: `claimTokens` would now refund any investor, and none exist here. |
+| 8 | Grant the Ops Agent's RAMS mandate | `ramsGrantMandate` | [`0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc`](https://sepolia.etherscan.io/tx/0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc) | **The differentiator.** Agent `0x5F7d…8B3dC`, scoped to `transferFrom` on USDT, capped at 50 USDT/tx and 100 USDT cumulative. |
+| 9 | Approve the Compliance Agent as RAMS operator | `ramsSetOperator` | [`0xda86ce2383536b248a7b2d3484d457de743e95073c100a1e44b1e3aa29b99f35`](https://sepolia.etherscan.io/tx/0xda86ce2383536b248a7b2d3484d457de743e95073c100a1e44b1e3aa29b99f35) | Operator `0x0F19…96D85` can now call `revokeMandate` on the Ops Agent's mandate directly — no payout or mint authority of its own. |
+| 10 | Approve the RAMS executor on USDT | `approve` | [`0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b`](https://sepolia.etherscan.io/tx/0xda81cfd1f2a31825f5d657eab630647d2bc97d2ed30b0b626c6a82983708866b) | 100 USDT allowance from issuer to executor `0xE983…a6B87D7` — RAMS sits on top of the ERC-20 allowance, doesn't replace it. Actual `execute` still needs both this **and** real USDT balance (still 0, pending Brickken funding) **and** Ops wallet gas (pending funding). |
+
+### RAMS `can-execute` dry run — the mandate enforcing its own cap, on-chain
+
+Not a transaction — a read against the live `AgentMandate` contract's own logic, run immediately after the mandate above was granted:
+
+```
+GET /rams/can-execute  agent=Ops  amount=25 USDT   -> allowed: true  (withinTransactionCap: true, withinCumulativeCap: true)
+GET /rams/can-execute  agent=Ops  amount=999 USDT  -> allowed: false (withinTransactionCap: false, withinCumulativeCap: false)
+```
+Full responses: `docs/evidence/rams-can-execute-within-cap.json`, `docs/evidence/rams-can-execute-over-cap.json`. This is the contract itself refusing the over-cap request, not an application-side check.
 
 ## Pending on funding / access
 

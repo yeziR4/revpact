@@ -1,0 +1,152 @@
+{
+  "prepared": {
+    "transactions": {
+      "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "to": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+      "data": "0xc6a4ad00000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002000000000000000000000000005f7d57c14ce03a4f1a7ec16518feb2ba28e8b3dc0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ab3ac4a00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba000000000000000000000000a90d2503d5d9b80ecc27856ff76f892b8c02f278c60e8c18facc2369184119d69a11f1ccf0d3c2a56dd31605d03c7c81f73a42e200000000000000000000000028d2b01854d0abec267a3ddcad9163580e6e86040000000000000000000000000000000000000000000000000000000002faf0800000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123b872dd000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "value": "0x00",
+      "nonce": 6,
+      "chainId": 11155111,
+      "gasLimit": "0x0527fe",
+      "maxPriorityFeePerGas": "0x118c30",
+      "maxFeePerGas": "0x4b6f2658",
+      "type": 2
+    },
+    "txId": "0xe2463e968ef3313842ecabc03d47b3453680e56adf041cfafb104fbe6022b432",
+    "info": {
+      "contractAddress": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+      "mode": "direct",
+      "eip712Nonce": "0",
+      "agent": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+      "validFrom": 0,
+      "validUntil": 1790159946,
+      "principal": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "complianceProvider": "0xa90D2503D5D9b80ECC27856Ff76F892B8C02f278",
+      "identityRef": "0xc60e8c18facc2369184119d69a11f1ccf0d3c2a56dd31605d03c7c81f73a42e2",
+      "asset": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+      "maxTransactionValue": "50000000",
+      "maxCumulativeValue": "100000000",
+      "metadata": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "actions": [
+        "0x23b872dd00000000000000000000000000000000000000000000000000000000"
+      ],
+      "nonce": "0",
+      "deadline": "0",
+      "complianceCheck": {
+        "eligible": true,
+        "reason": "COMPLIANT",
+        "reasonCode": 0,
+        "expiresAt": 0
+      },
+      "unlimitedTransactionValue": false,
+      "unlimitedCumulativeValue": false
+    },
+    "executionMode": "client-signed",
+    "x402Requirements": [
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "USDC",
+          "version": "2",
+          "tokenSymbol": "USDC",
+          "displayPrice": "0.005000000000000000 USDC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "EURC",
+          "version": "2",
+          "tokenSymbol": "EURC",
+          "displayPrice": "0.005000000000000000 EURC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x2458fB1620ff84019d73216fF20aA1F82Bc8E4CC",
+        "amount": "5000000000000000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "Brickken Testnet",
+          "version": "1",
+          "tokenSymbol": "BKN",
+          "displayPrice": "0.005000000000000000 BKN",
+          "assetTransferMethod": "permit2",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      }
+    ]
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0xe2463e968ef3313842ecabc03d47b3453680e56adf041cfafb104fbe6022b432",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 6,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x4b6f2658"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0x0527fe"
+              },
+              "to": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0xc6a4ad00000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002000000000000000000000000005f7d57c14ce03a4f1a7ec16518feb2ba28e8b3dc0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006ab3ac4a00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba000000000000000000000000a90d2503d5d9b80ecc27856ff76f892b8c02f278c60e8c18facc2369184119d69a11f1ccf0d3c2a56dd31605d03c7c81f73a42e200000000000000000000000028d2b01854d0abec267a3ddcad9163580e6e86040000000000000000000000000000000000000000000000000000000002faf0800000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000123b872dd000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "accessList": [],
+              "hash": "0x782b6cee8e3125dc55cd846d8df8a5536bf292fc85ec479b730fd8af85b44adc",
+              "v": 1,
+              "r": "0xe3e308bdcdde2d04ca5bcd599d068af91a0163041d24eca50d767286a29a4224",
+              "s": "0x275284482d3bc967b690a32fcf24a17b0d19f0379b7bf9be164e5896fb585f95",
+              "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
