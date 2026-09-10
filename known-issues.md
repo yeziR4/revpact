@@ -60,6 +60,16 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** always pass `principal` explicitly, matching `signerAddress`, even in direct mode.
 - **Reported to Brickken team:** no — minor documentation gap, not worth a support round-trip; noted here for the next person.
 
+### `ramsExecute` prepare fails reading frozen status — server bug, not a request issue
+
+- **Method / endpoint:** `POST /prepare-transactions` (`ramsExecute`).
+- **Date hit:** 2026-09-10.
+- **Request (redacted):** ERC-20 helper mode against our confirmed, active mandate — `agent` (Ops), `principal` (issuer), `executorAddress` (our dedicated executor), `asset` (USDT), `from`/`to`/`amount` within the granted cap. Also tried with an explicit `agentMandateAddress` override, and with `agent`/`principal` added even though implied by `signerAddress`/context — same result every time.
+- **Observed response / error:** `500 Server Error` — `"Could not read agent frozen status from RAMS contracts: call revert exception ... (method=\"isFrozen(address)\", data=\"0x\", ...)"`.
+- **Why this is Brickken's bug, not ours:** the identical read — `isFrozen` for the same agent/principal pair, same chain — succeeds cleanly via `GET /rams/status` and `GET /rams/mandate` (`isFrozen: false` / `frozen: false`, both `200`). Only the internal frozen-status check inside `ramsExecute`'s own prepare handler fails, with an empty revert consistent with calling `isFrozen` against a contract that doesn't implement it at that selector — most likely the executor address rather than the AgentMandate registry.
+- **Workaround used:** none available — this is a 500 inside Brickken's own prepare logic before it reaches any of our request fields; no client-side change can route around it.
+- **Reported to Brickken team:** yes, 2026-09-10, with the exact repro above and the working-getter comparison to narrow it down.
+
 ## Template for entries found during this build
 
 ```
