@@ -135,6 +135,8 @@
   .cast-card .role { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--accent-2); }
   .cast-card .name { font-size: 15px; font-weight: 600; margin: 3px 0 6px; }
   .cast-card .addr { font-size: 11.5px; color: var(--text-dim); margin-bottom: 8px; }
+  .cast-card .addr a { color: var(--text-dim); text-decoration: none; border-bottom: 1px dashed var(--border); }
+  .cast-card .addr a:hover { color: var(--accent-2); border-bottom-color: var(--accent-2); }
   .cast-card .power { font-size: 12.5px; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 8px; }
   .cast-card .power b { color: var(--text); font-weight: 600; }
   .live-row { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--text-dim); margin-top: 8px; }
@@ -297,8 +299,8 @@
       </figure>
 
       <div class="kv-box">
-        <div class="kv"><span class="k">AgentMandate registry</span><span class="v mono">0xD68E&hellip;C26778e</span></div>
-        <div class="kv"><span class="k">Executor</span><span class="v mono">0xF626&hellip;8b65b</span></div>
+        <div class="kv"><span class="k">AgentMandate registry</span><span class="v mono"><a href="https://sepolia.etherscan.io/address/0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e" target="_blank" rel="noopener">0xD68E&hellip;C26778e &nearr;</a></span></div>
+        <div class="kv"><span class="k">Executor</span><span class="v mono"><a href="https://sepolia.etherscan.io/address/0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b" target="_blank" rel="noopener">0xF626&hellip;8b65b &nearr;</a></span></div>
         <div class="kv"><span class="k">identityRef</span><span class="v mono">0xc60e&hellip;73a42e2</span></div>
         <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok">COMPLIANT</span></span></div>
         <div class="kv"><span class="k">First mandate</span><span class="v"><span class="chip warn">revoked (by design)</span></span></div>
@@ -314,28 +316,28 @@
       <div class="cast-card">
         <div class="role">Principal</div>
         <div class="name">Issuer Agent</div>
-        <div class="addr mono">0x7284&hellip;35cBA</div>
+        <div class="addr mono"><a href="https://sepolia.etherscan.io/address/0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA" target="_blank" rel="noopener">0x7284&hellip;35cBA &nearr; verify</a></div>
         <div class="power">Runs the full lifecycle &mdash; tokenize, offer, whitelist, mint &mdash; and is the <b>only</b> wallet that can mint, burn, or grant authority to the other two.</div>
         <div class="live-row">ETH <span id="live-issuer-eth">&mdash;</span> &middot; USDT <span id="live-issuer-usdt">&mdash;</span></div>
       </div>
       <div class="cast-card">
         <div class="role">Mandated</div>
         <div class="name">Ops Agent</div>
-        <div class="addr mono">0x5F7d&hellip;8B3dC</div>
+        <div class="addr mono"><a href="https://sepolia.etherscan.io/address/0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC" target="_blank" rel="noopener">0x5F7d&hellip;8B3dC &nearr; verify</a></div>
         <div class="power">Could move payment tokens, capped, while its mandate existed. <b>Cannot mint, whitelist, or act on any other asset</b> &mdash; and no longer has even that, since step 4.</div>
         <div class="live-row">ETH <span id="live-ops-eth">&mdash;</span></div>
       </div>
       <div class="cast-card">
         <div class="role">Operator</div>
         <div class="name">Compliance Agent</div>
-        <div class="addr mono">0x0F19&hellip;96D85</div>
+        <div class="addr mono"><a href="https://sepolia.etherscan.io/address/0x0F1955E136793A8558A0a088b5D9dc9aCB796D85" target="_blank" rel="noopener">0x0F19&hellip;96D85 &nearr; verify</a></div>
         <div class="power">Holds exactly one power: revoke. <b>No payout, mint, or burn authority ever</b> &mdash; used its one power once, correctly.</div>
         <div class="live-row">ETH <span id="live-compliance-eth">&mdash;</span></div>
       </div>
       <div class="cast-card">
         <div class="role">Investor</div>
         <div class="name">Test allocation holder</div>
-        <div class="addr mono">0x2096&hellip;6D45D9</div>
+        <div class="addr mono"><a href="https://sepolia.etherscan.io/address/0x2096885bc90612ad5Db2CB9e5F07340B406D45D9" target="_blank" rel="noopener">0x2096&hellip;6D45D9 &nearr; verify</a></div>
         <div class="power">Whitelisted, holds 500 RVP1 from a direct mint. A distinct identity from the issuer, as Brickken requires.</div>
         <div class="live-row">RVP1 <span id="live-investor-rvp1">&mdash;</span> &middot; USDT <span id="live-investor-usdt">&mdash;</span></div>
       </div>
