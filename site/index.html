@@ -1,43 +1,44 @@
 <title>RevPact Build Log</title>
 <style>
   :root {
-    --bg: #FAF7F1;
+    --bg: #F4F6FD;
     --surface: #FFFFFF;
-    --surface-2: #F0ECE3;
-    --border: #DDD5C7;
-    --text: #1C1A16;
-    --text-dim: #6B6558;
-    --accent: #B9791F;
-    --accent-2: #2E6E93;
-    --success: #2E7D5B;
-    --success-bg: #E6F1EB;
-    --critical: #B23A3D;
-    --critical-bg: #F7E7E7;
-    --pending: #5B6B8C;
-    --pending-bg: #EAECF2;
-    --line: #C9BFA9;
-    --shadow: 0 1px 2px rgba(28,26,22,0.06), 0 8px 24px -12px rgba(28,26,22,0.18);
+    --surface-2: #EBEFFB;
+    --border: #D6DEF5;
+    --text: #16213E;
+    --text-dim: #5C6584;
+    --accent: #2952DE;
+    --accent-ink: #FFFFFF;
+    --accent-2: #16213E;
+    --success: #1E8F6F;
+    --success-bg: #E3F3EC;
+    --critical: #C13B3E;
+    --critical-bg: #FBE9E9;
+    --pending: #5C6584;
+    --pending-bg: #EBEFFB;
+    --line: #C7D2F0;
+    --shadow: 0 1px 2px rgba(22,33,62,0.06), 0 8px 24px -12px rgba(22,33,62,0.16);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0D1117; --surface: #151B24; --surface-2: #1B2230; --border: #262E3D;
-      --text: #E8EAF0; --text-dim: #8890A0;
-      --accent: #E8A33D; --accent-2: #6FB6E0;
-      --success: #5CC79A; --success-bg: #12291F;
+      --bg: #0E1526; --surface: #151E36; --surface-2: #1B2542; --border: #2A3557;
+      --text: #E7ECFB; --text-dim: #96A1C4;
+      --accent: #5A85FF; --accent-ink: #0B1330; --accent-2: #97A6E0;
+      --success: #4FBE94; --success-bg: #123128;
       --critical: #E5787B; --critical-bg: #2E1518;
-      --pending: #93A3C7; --pending-bg: #171C2A;
-      --line: #33394A;
+      --pending: #8592BD; --pending-bg: #17203A;
+      --line: #2E3A5E;
       --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -14px rgba(0,0,0,0.6);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0D1117; --surface: #151B24; --surface-2: #1B2230; --border: #262E3D;
-    --text: #E8EAF0; --text-dim: #8890A0;
-    --accent: #E8A33D; --accent-2: #6FB6E0;
-    --success: #5CC79A; --success-bg: #12291F;
+    --bg: #0E1526; --surface: #151E36; --surface-2: #1B2542; --border: #2A3557;
+    --text: #E7ECFB; --text-dim: #96A1C4;
+    --accent: #5A85FF; --accent-ink: #0B1330; --accent-2: #97A6E0;
+    --success: #4FBE94; --success-bg: #123128;
     --critical: #E5787B; --critical-bg: #2E1518;
-    --pending: #93A3C7; --pending-bg: #171C2A;
-    --line: #33394A;
+    --pending: #8592BD; --pending-bg: #17203A;
+    --line: #2E3A5E;
     --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -14px rgba(0,0,0,0.6);
   }
 
@@ -61,6 +62,16 @@
   .chip.warn { color: var(--critical); background: var(--critical-bg); border-color: transparent; }
 
   /* ---------- Hero ---------- */
+  .brand-badge {
+    display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
+    font-size: 13px; font-weight: 500; color: var(--accent-2);
+    padding: 5px 12px 5px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface-2);
+    margin-bottom: 18px;
+  }
+  .brand-badge strong { color: var(--accent); font-weight: 700; }
+  .brand-badge:hover { border-color: var(--accent); }
+  .brand-mark { width: 16px; height: 16px; flex-shrink: 0; }
+  .brand-mark circle { fill: var(--accent); }
   .eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
   h1.claim {
     font-size: 52px; font-weight: 600; font-style: italic; line-height: 1.08;
@@ -153,7 +164,16 @@
 
 <div class="wrap">
 
-  <div class="eyebrow">Build with Brickken &mdash; Agentic Challenge</div>
+  <a class="brand-badge" href="https://www.brickken.com" target="_blank" rel="noopener">
+    <svg class="brand-mark" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Brickken">
+      <circle cx="3" cy="2" r="1.3"/><circle cx="3" cy="7" r="1.3"/><circle cx="3" cy="12" r="1.3"/><circle cx="3" cy="17" r="1.3"/>
+      <circle cx="7.5" cy="4.5" r="1.3"/><circle cx="7.5" cy="9.5" r="1.3"/><circle cx="7.5" cy="14.5" r="1.3"/>
+      <circle cx="12" cy="7" r="1.3"/><circle cx="12" cy="12" r="1.3"/>
+      <circle cx="16" cy="9.5" r="1.15"/>
+    </svg>
+    <span>Built with <strong>Brickken</strong></span>
+  </a>
+  <div class="eyebrow">Agentic Challenge submission</div>
   <h1 class="claim">An agent that can only pay. An agent that can only <span class="kill">kill</span>.</h1>
   <div class="subhead">RevPact tokenizes recurring revenue on Brickken, then hands two AI agents authority bounded by a smart contract instead of a policy document &mdash; and proves it, live, on Ethereum Sepolia. Below is the sequence that proves it, not a description of it.</div>
 
