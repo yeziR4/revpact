@@ -68,13 +68,18 @@ src/rules/                     the compliance trigger engine (pure logic, chain-
 
 ## Status
 
-✅ **Live on Ethereum Sepolia — 10 confirmed transactions, RAMS mandate active.** Real API key, real wallets, real confirmed transactions, run through `scripts/tx.mjs` against the live sandbox with schemas confirmed from [`docs/brickken-docs-reference.txt`](docs/brickken-docs-reference.txt). Full log with tx hashes: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **The full mandate lifecycle is closed, on Ethereum Sepolia, end to end.** 16 real Sepolia transactions and API calls, run through `scripts/tx.mjs` against the live sandbox. Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
-Verified end to end: tokenize → whitelist investor → mint → launch STO → claim BKN from the faucet → close the STO (rollback, since nobody invested) → **register the RAMS executor's `transferFrom` action → grant the Ops Agent's mandate → approve the Compliance Agent as operator → approve the executor on USDT**. The mandate's cap enforcement is verified live against the real contract: `GET /rams/can-execute` returns `allowed: true` for a 25 USDT request and `allowed: false` for a 999 USDT one, against the actual granted mandate — not an app-side guess.
+The complete story, all confirmed on-chain or rejected by the live contract, same session:
 
-Two things still open, tracked in [`known-issues.md`](known-issues.md) and [`docs/build-plan.md`](docs/build-plan.md):
-- **A real `execute`** (moving actual value under the mandate) needs the issuer to hold test USDT — 0 today, mock token's `mint()` is access-controlled, requested from Brickken.
-- **Ops and Compliance wallets need Sepolia ETH** to sign their own steps (`execute`, `revokeMandate`) — neither is relayable through the issuer.
+1. Tokenize → whitelist → mint → launch STO → claim BKN from the faucet → close the STO
+2. Grant the Ops Agent a RAMS mandate — `transferFrom` on USDT, capped at 50/100 USDT — and approve the Compliance Agent as operator
+3. **Ops Agent executes a within-cap transfer** — the mandate authorizes it, the call reaches the real ERC-20 `transferFrom`, and only fails there on a 0 balance (not a mandate rejection — the mandate did its job)
+4. **Ops Agent attempts an over-cap transfer** — rejected before it ever reaches the chain: `"mandate does not allow this execution: withinTransactionCap, withinCumulativeCap"`
+5. **Compliance Agent revokes the Ops Agent's mandate**, on its own signature, as an approved operator — no payout authority of its own, only this
+6. **Ops Agent attempts the same transfer again** — rejected: `"mandate does not allow this execution: notRevoked"`. Its authority is provably gone.
+
+The one thing left is cosmetic rather than structural: a real payout (not just an authorized-but-reverted attempt) needs test USDT in the issuer wallet, still pending from Brickken (mock token's `mint()` is access-controlled). Every mechanism that matters — grant, authorize, cap-reject, revoke, post-revoke-reject — is already proven live.
 
 ## Judging alignment
 

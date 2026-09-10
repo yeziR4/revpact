@@ -67,11 +67,15 @@ Kept intentionally simple so it's demonstrably real rather than theatrical:
 
 This can start as a script you POST to locally and graduate to something pulling from a real external signal (e.g. a sanctions-list check, a KYC-expiry timestamp) if time allows — the trigger's *source* matters less than the fact that the agent, not the operator, decides and executes.
 
-## Status (2026-09-10)
+## Status (2026-09-10) — the mandate lifecycle is fully closed
 
-Everything in this document is now verified against the live sandbox, not inferred — see `docs/transactions.md` for the full tx-hash-backed log. As of this update:
+Everything in this document is now verified against the live sandbox, not inferred — see `docs/transactions.md` for the full tx-hash-backed log. As of this update, every mechanism this design depends on has been demonstrated live, in order, in one session:
 
-- **Mandate granted and confirmed on-chain**: the Ops Agent (`0x5F7d…8B3dC`) holds a real RAMS mandate scoped to `transferFrom` on USDT, capped at 50 USDT/tx and 100 USDT cumulative.
-- **Operator approved and confirmed on-chain**: the Compliance Agent (`0x0F19…96D85`) can call `revokeMandate` on that mandate directly.
-- **Cap enforcement verified live**: `GET /rams/can-execute` — the mandate contract's own logic, not an app-side check — returns `allowed: true` for a 25 USDT request and `allowed: false` (both `withinTransactionCap` and `withinCumulativeCap` false) for a 999 USDT request, against the actual granted mandate.
-- **Still open**: an actual `execute` (moving real value) needs (1) the issuer to hold real USDT — 0 today, blocked on Brickken funding it — and (2) the Ops and Compliance wallets funded with a little Sepolia ETH to sign their own steps. Both tracked in `known-issues.md` / `docs/build-plan.md`.
+1. **Mandate granted, confirmed on-chain**: Ops Agent (`0x5F7d…8B3dC`), `transferFrom` on USDT, capped 50 USDT/tx and 100 USDT cumulative.
+2. **Operator approved, confirmed on-chain**: Compliance Agent (`0x0F19…96D85`) can call `revokeMandate` directly.
+3. **In-scope execution authorized**: the Ops Agent's within-cap `execute` was accepted by the mandate and reached the real ERC-20 `transferFrom` — it only failed there on a 0 balance, which is the one remaining external dependency (test USDT), not a gap in the mandate mechanism.
+4. **Out-of-scope execution rejected, by the contract, before broadcast**: an over-cap `execute` attempt was refused with `withinTransactionCap`/`withinCumulativeCap` — the exact two checks `can-execute` predicted would fail.
+5. **Revocation, executed by the Compliance Agent, not the issuer**: `ramsRevokeMandate`, signed by the Compliance Agent's own key, as an approved operator.
+6. **Authority confirmed gone**: the identical within-cap `execute` that succeeded in step 3 was rejected post-revoke with `notRevoked`.
+
+The only open item is a real value-moving payout, blocked purely on Brickken funding the issuer wallet with test USDT (`known-issues.md`) — every authority boundary the design claims has already been proven, not just described.

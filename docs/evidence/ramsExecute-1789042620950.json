@@ -1,0 +1,152 @@
+{
+  "prepared": {
+    "transactions": {
+      "from": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+      "to": "0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b",
+      "data": "0x1cff79cd00000000000000000000000028d2b01854d0abec267a3ddcad9163580e6e86040000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000006423b872dd00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba0000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d900000000000000000000000000000000000000000000000000000000017d784000000000000000000000000000000000000000000000000000000000",
+      "value": "0x00",
+      "nonce": 0,
+      "chainId": 11155111,
+      "gasLimit": "0x075300",
+      "maxPriorityFeePerGas": "0x118c30",
+      "maxFeePerGas": "0x6654537b",
+      "type": 2
+    },
+    "txId": "0xfd9e76a937f41536a72d2e4760e91567d1785379da621ce7188b3746128af3f8",
+    "info": {
+      "contractAddress": "0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b",
+      "mode": "direct",
+      "executorAddress": "0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b",
+      "executorPrincipal": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "agentMandateAddress": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+      "target": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+      "selector": "0x23b872dd",
+      "action": "0x23b872dd00000000000000000000000000000000000000000000000000000000",
+      "gatedAmount": "25000000",
+      "canExecute": true,
+      "checks": {
+        "mandateExists": true,
+        "assetMatches": true,
+        "withinValidityWindow": true,
+        "notRevoked": true,
+        "actionEnabled": true,
+        "agentNotFrozen": true,
+        "withinTransactionCap": true,
+        "withinCumulativeCap": true
+      },
+      "asset": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+      "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "to": "0x2096885bc90612ad5Db2CB9e5F07340B406D45D9",
+      "amount": "25000000",
+      "allowance": "100000000",
+      "fromMatchesExecutorPrincipal": true
+    },
+    "executionMode": "client-signed",
+    "x402Requirements": [
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "USDC",
+          "version": "2",
+          "tokenSymbol": "USDC",
+          "displayPrice": "0.005000000000000000 USDC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "EURC",
+          "version": "2",
+          "tokenSymbol": "EURC",
+          "displayPrice": "0.005000000000000000 EURC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x2458fB1620ff84019d73216fF20aA1F82Bc8E4CC",
+        "amount": "5000000000000000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "Brickken Testnet",
+          "version": "1",
+          "tokenSymbol": "BKN",
+          "displayPrice": "0.005000000000000000 BKN",
+          "assetTransferMethod": "permit2",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      }
+    ]
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0xfd9e76a937f41536a72d2e4760e91567d1785379da621ce7188b3746128af3f8",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 0,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x6654537b"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0x075300"
+              },
+              "to": "0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0x1cff79cd00000000000000000000000028d2b01854d0abec267a3ddcad9163580e6e86040000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000006423b872dd00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba0000000000000000000000002096885bc90612ad5db2cb9e5f07340b406d45d900000000000000000000000000000000000000000000000000000000017d784000000000000000000000000000000000000000000000000000000000",
+              "accessList": [],
+              "hash": "0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61",
+              "v": 1,
+              "r": "0xf715cee0ffccbb196880c56a0088e51a6876dac8f4491d67a2545da03ec1a590",
+              "s": "0x3e277532c91e93fb600f84655bd552fab7eaed5ff323543ebdb5b58990b541d6",
+              "from": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

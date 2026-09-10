@@ -25,6 +25,21 @@ GET /rams/can-execute  agent=Ops  amount=999 USDT  -> allowed: false (withinTran
 ```
 Full responses: `docs/evidence/rams-can-execute-within-cap.json`, `docs/evidence/rams-can-execute-over-cap.json`. This is the contract itself refusing the over-cap request, not an application-side check.
 
+### The full mandate lifecycle, closed end to end (2026-09-10)
+
+Brickken swapped in a working executor (`0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b`, replacing one with a server-side bug — see `known-issues.md`). Re-registered the action and re-approved it, then ran the complete sequence:
+
+| # | Step | Method | Result | Tx hash |
+|---|------|--------|--------|---------|
+| 11 | Register `transferFrom` on the new executor | `ramsSetExecutorAction` | confirmed | [`0x0b8fa2554b...`](https://sepolia.etherscan.io/tx/0x0b8fa2554b8dbcc8bd635c3f864018359a3d10bae165f91ba4a3315f0f0b3f09) |
+| 12 | Approve the new executor on USDT | `approve` | confirmed | [`0xbd455969ee...`](https://sepolia.etherscan.io/tx/0xbd455969ee07c140ee39d84c47f840a2ce133009db1619dd0a093a5151040119) |
+| 13 | Ops Agent executes a within-cap transfer (25 USDT) | `ramsExecute` | **mandate authorized it** — broadcast, reached the real ERC-20 `transferFrom`, reverted only on 0 balance (`status: 0x0`, no `Transfer` log) | [`0x0482f0ba6b...`](https://sepolia.etherscan.io/tx/0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61) |
+| 14 | Ops Agent attempts an over-cap transfer (999 USDT) | `ramsExecute` | **rejected before broadcast** — `400: "mandate does not allow this execution: withinTransactionCap, withinCumulativeCap"` | no tx (rejected at prepare — no gas spent) |
+| 15 | Compliance Agent revokes the Ops Agent's mandate | `ramsRevokeMandate` | confirmed, signed by the Compliance Agent as approved operator | [`0xbf395482...`](https://sepolia.etherscan.io/tx/0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36) |
+| 16 | Ops Agent attempts the same within-cap transfer again | `ramsExecute` | **rejected** — `400: "mandate does not allow this execution: notRevoked"` | no tx (rejected at prepare) |
+
+Step 13 matters as much as the successful cases: it proves the mandate genuinely *authorizes* in-scope calls (it doesn't block what it shouldn't) — the only thing standing between this and a real payout is test USDT in the issuer wallet. Steps 14 and 16 are the two "does the boundary actually hold" proof points: over-cap and post-revoke, both refused by the mandate contract itself, both for a different, correctly-identified reason (`withinTransactionCap`/`withinCumulativeCap` vs. `notRevoked`).
+
 ## Pending on funding / access
 
 - **Dividend distribution**: blocked — issuer wallet holds 0 test USDT (the sandbox's configured payment token) and its `mint()` is access-controlled (reverts for us). Needs Brickken to fund the issuer wallet with test USDT, or point us at a supported faucet.

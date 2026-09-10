@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "ramsExecute",
+    "agent": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+    "principal": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+    "executorAddress": "0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b",
+    "asset": "0x28d2B01854D0aBec267a3DDcad9163580E6E8604",
+    "from": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+    "to": "0x2096885bc90612ad5Db2CB9e5F07340B406D45D9",
+    "amount": "25000000"
+  },
+  "note": "Same request that broadcast successfully in step 13 (before revoke) -- run again immediately after ramsRevokeMandate confirmed.",
+  "response": {
+    "status": 400,
+    "errors": {
+      "messages": "mandate does not allow this execution: notRevoked"
+    }
+  }
+}

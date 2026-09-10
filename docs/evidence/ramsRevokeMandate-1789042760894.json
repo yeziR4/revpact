@@ -1,0 +1,134 @@
+{
+  "prepared": {
+    "transactions": {
+      "from": "0x0F1955E136793A8558A0a088b5D9dc9aCB796D85",
+      "to": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+      "data": "0x5e20639e0000000000000000000000005f7d57c14ce03a4f1a7ec16518feb2ba28e8b3dc00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000",
+      "value": "0x00",
+      "nonce": 0,
+      "chainId": 11155111,
+      "gasLimit": "0xa659",
+      "maxPriorityFeePerGas": "0x118c30",
+      "maxFeePerGas": "0x49a97e5c",
+      "type": 2
+    },
+    "txId": "0x48868a8c9b084434f68a910d8d6d1f5dcf51ca31b1d92f4b74d990798fdf01d0",
+    "info": {
+      "contractAddress": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+      "mode": "direct",
+      "eip712Nonce": "0",
+      "agent": "0x5F7d57c14ce03a4f1A7eC16518fEb2ba28E8b3dC",
+      "principal": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+      "nonce": "0",
+      "deadline": "0",
+      "revokedBy": "0x0F1955E136793A8558A0a088b5D9dc9aCB796D85"
+    },
+    "executionMode": "client-signed",
+    "x402Requirements": [
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "USDC",
+          "version": "2",
+          "tokenSymbol": "USDC",
+          "displayPrice": "0.005000000000000000 USDC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4",
+        "amount": "5000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "EURC",
+          "version": "2",
+          "tokenSymbol": "EURC",
+          "displayPrice": "0.005000000000000000 EURC",
+          "assetTransferMethod": "eip3009",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      },
+      {
+        "scheme": "exact",
+        "network": "eip155:11155111",
+        "asset": "0x2458fB1620ff84019d73216fF20aA1F82Bc8E4CC",
+        "amount": "5000000000000000",
+        "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+        "maxTimeoutSeconds": 300,
+        "extra": {
+          "name": "Brickken Testnet",
+          "version": "1",
+          "tokenSymbol": "BKN",
+          "displayPrice": "0.005000000000000000 BKN",
+          "assetTransferMethod": "permit2",
+          "chainId": "11155111",
+          "paymentChainId": "11155111",
+          "operationChainId": "11155111",
+          "routeKey": "POST /send-transactions"
+        }
+      }
+    ]
+  },
+  "sent": {
+    "success": true,
+    "totalTransactions": 1,
+    "successfulTransactions": 1,
+    "failedTransactions": 0,
+    "results": [
+      {
+        "txId": "0x48868a8c9b084434f68a910d8d6d1f5dcf51ca31b1d92f4b74d990798fdf01d0",
+        "success": true,
+        "result": {
+          "txResponses": [
+            {
+              "type": 2,
+              "chainId": 11155111,
+              "nonce": 0,
+              "maxPriorityFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x118c30"
+              },
+              "maxFeePerGas": {
+                "type": "BigNumber",
+                "hex": "0x49a97e5c"
+              },
+              "gasPrice": null,
+              "gasLimit": {
+                "type": "BigNumber",
+                "hex": "0xa659"
+              },
+              "to": "0xD68E1bb972cA4EF7F5764FBf6d685a6DfC26778e",
+              "value": {
+                "type": "BigNumber",
+                "hex": "0x00"
+              },
+              "data": "0x5e20639e0000000000000000000000005f7d57c14ce03a4f1a7ec16518feb2ba28e8b3dc00000000000000000000000072842560b8b969fab80453eda1e7eda7bfc35cba000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000",
+              "accessList": [],
+              "hash": "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36",
+              "v": 0,
+              "r": "0x674c44ae9c635b1bd561186ca9266a132a972cf201558288e3a5bee022073b71",
+              "s": "0x476737f8a9213ead17e55403c25437f01f7821ba890da16f9507bf56a81f9265",
+              "from": "0x0F1955E136793A8558A0a088b5D9dc9aCB796D85",
+              "confirmations": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

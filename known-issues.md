@@ -60,7 +60,7 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** always pass `principal` explicitly, matching `signerAddress`, even in direct mode.
 - **Reported to Brickken team:** no — minor documentation gap, not worth a support round-trip; noted here for the next person.
 
-### `ramsExecute` prepare fails reading frozen status — server bug, not a request issue
+### `ramsExecute` prepare fails reading frozen status — server bug, not a request issue — RESOLVED
 
 - **Method / endpoint:** `POST /prepare-transactions` (`ramsExecute`).
 - **Date hit:** 2026-09-10.
@@ -68,7 +68,7 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Observed response / error:** `500 Server Error` — `"Could not read agent frozen status from RAMS contracts: call revert exception ... (method=\"isFrozen(address)\", data=\"0x\", ...)"`.
 - **Why this is Brickken's bug, not ours:** the identical read — `isFrozen` for the same agent/principal pair, same chain — succeeds cleanly via `GET /rams/status` and `GET /rams/mandate` (`isFrozen: false` / `frozen: false`, both `200`). Only the internal frozen-status check inside `ramsExecute`'s own prepare handler fails, with an empty revert consistent with calling `isFrozen` against a contract that doesn't implement it at that selector — most likely the executor address rather than the AgentMandate registry.
 - **Workaround used:** none available — this is a 500 inside Brickken's own prepare logic before it reaches any of our request fields; no client-side change can route around it.
-- **Reported to Brickken team:** yes, 2026-09-10, with the exact repro above and the working-getter comparison to narrow it down.
+- **Reported to Brickken team:** yes, 2026-09-10. **Fixed the same day**: the original dedicated executor (`0xE9832b090fBaEe59Bb26F2394448cfF49a6B87D7`) had the broken `isFrozen` path; Brickken issued a replacement (`0xF626e5840c888a5E395f42F2dcC24F58EAb8b65b`) bound to the same AgentMandate registry, already holding `RECORDER_ROLE`. Re-ran `ramsSetExecutorAction` and the token `approve` against the new executor, and `ramsExecute` worked immediately — full sequence (within-cap execute, over-cap rejection, revoke, post-revoke rejection) all confirmed the same session. See `docs/transactions.md`.
 
 ## Template for entries found during this build
 
