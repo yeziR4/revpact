@@ -159,7 +159,7 @@
 
   <div class="status-rail">
     <span class="chip ok">● Ethereum Sepolia</span>
-    <span class="chip">16 real calls</span>
+    <span class="chip">19 real calls</span>
     <span class="chip" id="deadline-chip">calculating&hellip;</span>
     <div class="links">
       <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repo &rarr;</a>
@@ -170,8 +170,8 @@
 
   <section>
     <div class="kicker">The whole point of this build</div>
-    <h2>Five moves. Watch the leash actually hold.</h2>
-    <div class="section-intro">Every step below happened in this order, on the real chain, in one working session &mdash; not staged, not simulated. The Ops Agent's authority is granted, tested, refused when it oversteps, cut off by a different agent entirely, and confirmed gone.</div>
+    <h2>Six moves. Watch the leash actually hold &mdash; then watch it actually pay.</h2>
+    <div class="section-intro">Every step below happened in this order, on the real chain, in one working session &mdash; not staged, not simulated. The Ops Agent's authority is granted, tested, refused when it oversteps, cut off by a different agent entirely, confirmed gone, then proven to move real money once it exists.</div>
 
     <div class="sequence">
       <div class="seq-step grant">
@@ -186,7 +186,7 @@
         <div class="seq-node">2</div>
         <div class="seq-verb">Authorize</div>
         <div class="seq-title">Ops requests 25 USDT &mdash; within the cap</div>
-        <div class="seq-detail">The mandate says yes. The call reaches the real ERC-20 <code>transferFrom</code> and only stops there, on an empty treasury &mdash; the one external dependency left (test USDT from Brickken), not a gap in the authority check.</div>
+        <div class="seq-detail">The mandate says yes. The call reaches the real ERC-20 <code>transferFrom</code> and only stops there, on the treasury being empty at that moment &mdash; proof the authority check itself has no gap. (Funded and replayed for real in step 6.)</div>
         <div class="seq-proof"><a href="https://sepolia.etherscan.io/tx/0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61" target="_blank" rel="noopener">0x0482f0ba&hellip;fce61 &rarr;</a></div>
       </div>
 
@@ -212,6 +212,14 @@
         <div class="seq-title">Ops tries the identical, once-valid request</div>
         <div class="seq-detail">The same 25 USDT call that worked in step 2, replayed exactly, is refused: <code>"mandate does not allow this execution: notRevoked."</code> Not frozen. Not paused. Gone &mdash; and the contract says so in those words.</div>
         <div class="seq-proof"><span class="no-tx">rejected at prepare &mdash; no transaction, by design</span></div>
+      </div>
+
+      <div class="seq-step ok">
+        <div class="seq-node">6</div>
+        <div class="seq-verb">Payout</div>
+        <div class="seq-title">A fresh mandate, and this time the money actually moves</div>
+        <div class="seq-detail">Once the treasury was funded, granted the Ops Agent a new mandate on identical terms and let it execute for real. Investor's USDT balance: <b>0 &rarr; 25</b>. Issuer's: <b>100 &rarr; 75</b>. Not authorized-in-principle &mdash; a real transfer, verified on the recipient's balance.</div>
+        <div class="seq-proof"><a href="https://sepolia.etherscan.io/tx/0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" target="_blank" rel="noopener">0x16a5feea&hellip;9d3cac &rarr;</a></div>
       </div>
     </div>
   </section>
@@ -270,7 +278,8 @@
         <div class="kv"><span class="k">Executor</span><span class="v mono">0xF626&hellip;8b65b</span></div>
         <div class="kv"><span class="k">identityRef</span><span class="v mono">0xc60e&hellip;73a42e2</span></div>
         <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok">COMPLIANT</span></span></div>
-        <div class="kv"><span class="k">Mandate, final state</span><span class="v"><span class="chip warn">revoked</span></span></div>
+        <div class="kv"><span class="k">First mandate</span><span class="v"><span class="chip warn">revoked (by design)</span></span></div>
+        <div class="kv"><span class="k">Second mandate</span><span class="v"><span class="chip ok">active, used for a real payout</span></span></div>
       </div>
     </div>
   </section>
@@ -346,7 +355,10 @@
     { step: 11, method: "ramsSetExecutorAction", desc: "Registered transferFrom on the replacement executor", hash: "0x0b8fa2554b8dbcc8bd635c3f864018359a3d10bae165f91ba4a3315f0f0b3f09" },
     { step: 12, method: "approve", desc: "Re-approved the replacement executor for 100 USDT", hash: "0xbd455969ee07c140ee39d84c47f840a2ce133009db1619dd0a093a5151040119" },
     { step: 13, method: "ramsExecute", desc: "Within-cap transfer, authorized (sequence step 2)", hash: "0x0482f0ba6bb68e9efe69cbea5d5283ac700a91783d5802789e6ccd4917bfce61" },
-    { step: 15, method: "ramsRevokeMandate", desc: "Compliance revokes the mandate (sequence step 4)", hash: "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" }
+    { step: 15, method: "ramsRevokeMandate", desc: "Compliance revokes the mandate (sequence step 4)", hash: "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" },
+    { step: 17, method: "mint", desc: "Minted 100 test USDT to the issuer (direct contract call)", hash: "0x2184eb6a893b23893f8254e88ccfa72859c8d1b36a7c8db04ad996460304afa8" },
+    { step: 18, method: "ramsGrantMandate", desc: "Granted a fresh mandate, same terms", hash: "0x6e24c2be46b5d074ec79462dff5737695b2974718f22d8668b4367aa842ee42c" },
+    { step: 19, method: "ramsExecute", desc: "Real 25 USDT payout (sequence step 6)", hash: "0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" }
   ];
   const rejections = [
     { step: 14, desc: "Over-cap attempt, refused (sequence step 3)", reason: "withinTransactionCap, withinCumulativeCap" },
@@ -379,7 +391,8 @@
   const statuses = [
     { state: "resolved", text: "<b>RAMS principal eligibility</b> — a ComplianceProvider mismatch from a Brickken Sandbox redeployment. Fixed Sep 10." },
     { state: "resolved", text: "<b>RAMS executor bug</b> — the first dedicated executor couldn't read its own frozen status. Brickken replaced it same day; the full sequence above ran immediately after." },
-    { state: "open", text: "<b>Test USDT funding</b> — the sandbox payment token's mint() is access-controlled. The issuer wallet holds 0 USDT, which is the only thing standing between step 2's authorized transfer and an actual payout." }
+    { state: "resolved", text: "<b>Test USDT funding</b> — turned out to be self-serviceable the whole time. We'd misdiagnosed our own malformed contract call as an access-control restriction and escalated it to Brickken on that basis. They pointed us back at it; a corrected call minted 100 USDT directly. Full correction, not just a fix, in known-issues.md." },
+    { state: "resolved", text: "<b>Real payout</b> — with funds in hand, granted a fresh mandate and executed for real. Investor's balance moved 0 → 25 USDT on-chain, not just an authorized-in-principle call." }
   ];
   const statusList = document.getElementById("status-list");
   for (const s of statuses) {

@@ -68,18 +68,19 @@ src/rules/                     the compliance trigger engine (pure logic, chain-
 
 ## Status
 
-✅ **The full mandate lifecycle is closed, on Ethereum Sepolia, end to end.** 16 real Sepolia transactions and API calls, run through `scripts/tx.mjs` against the live sandbox. Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 19 real Sepolia transactions and API calls, run through `scripts/tx.mjs` against the live sandbox. Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
 The complete story, all confirmed on-chain or rejected by the live contract, same session:
 
 1. Tokenize → whitelist → mint → launch STO → claim BKN from the faucet → close the STO
 2. Grant the Ops Agent a RAMS mandate — `transferFrom` on USDT, capped at 50/100 USDT — and approve the Compliance Agent as operator
-3. **Ops Agent executes a within-cap transfer** — the mandate authorizes it, the call reaches the real ERC-20 `transferFrom`, and only fails there on a 0 balance (not a mandate rejection — the mandate did its job)
+3. **Ops Agent executes a within-cap transfer** — the mandate authorizes it, the call reaches the real ERC-20 `transferFrom`, and only fails there on a then-empty treasury (not a mandate rejection — the mandate did its job)
 4. **Ops Agent attempts an over-cap transfer** — rejected before it ever reaches the chain: `"mandate does not allow this execution: withinTransactionCap, withinCumulativeCap"`
 5. **Compliance Agent revokes the Ops Agent's mandate**, on its own signature, as an approved operator — no payout authority of its own, only this
 6. **Ops Agent attempts the same transfer again** — rejected: `"mandate does not allow this execution: notRevoked"`. Its authority is provably gone.
+7. **A fresh mandate, funded, and a real payout**: minted test USDT directly (turned out to be self-serviceable — see the correction in `known-issues.md`), granted a new mandate on identical terms, and executed for real. Investor's USDT balance: 0 → 25. Issuer's: 100 → 75.
 
-The one thing left is cosmetic rather than structural: a real payout (not just an authorized-but-reverted attempt) needs test USDT in the issuer wallet, still pending from Brickken (mock token's `mint()` is access-controlled). Every mechanism that matters — grant, authorize, cap-reject, revoke, post-revoke-reject — is already proven live.
+Nothing left blocking. Every mechanism the design claims — grant, authorize, cap-reject, revoke, post-revoke-reject, and an actual value transfer — is proven live, on-chain, with real balances that changed.
 
 ## Judging alignment
 

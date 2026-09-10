@@ -38,7 +38,19 @@ Brickken swapped in a working executor (`0xF626e5840c888a5E395f42F2dcC24F58EAb8b
 | 15 | Compliance Agent revokes the Ops Agent's mandate | `ramsRevokeMandate` | confirmed, signed by the Compliance Agent as approved operator | [`0xbf395482...`](https://sepolia.etherscan.io/tx/0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36) |
 | 16 | Ops Agent attempts the same within-cap transfer again | `ramsExecute` | **rejected** — `400: "mandate does not allow this execution: notRevoked"` | no tx (rejected at prepare) |
 
-Step 13 matters as much as the successful cases: it proves the mandate genuinely *authorizes* in-scope calls (it doesn't block what it shouldn't) — the only thing standing between this and a real payout is test USDT in the issuer wallet. Steps 14 and 16 are the two "does the boundary actually hold" proof points: over-cap and post-revoke, both refused by the mandate contract itself, both for a different, correctly-identified reason (`withinTransactionCap`/`withinCumulativeCap` vs. `notRevoked`).
+Step 13 matters as much as the successful cases: it proves the mandate genuinely *authorizes* in-scope calls (it doesn't block what it shouldn't). Steps 14 and 16 are the two "does the boundary actually hold" proof points: over-cap and post-revoke, both refused by the mandate contract itself, both for a different, correctly-identified reason (`withinTransactionCap`/`withinCumulativeCap` vs. `notRevoked`).
+
+### The real payout (2026-09-10)
+
+Test USDT turned out to be self-serviceable the whole time — see `known-issues.md` for the honest correction (our bug, not Brickken's: a hand-typed calldata argument was two bytes short, which we misread as an access-control revert). Once that was fixed, minted real USDT and ran an actual value-moving payout under a fresh mandate:
+
+| # | Step | Method | Result | Tx hash |
+|---|------|--------|--------|---------|
+| 17 | Mint 100 USDT to the issuer wallet | `mint` (direct contract call, `scripts/mint-usdt.mjs`) | confirmed | [`0x2184eb6a89...`](https://sepolia.etherscan.io/tx/0x2184eb6a893b23893f8254e88ccfa72859c8d1b36a7c8db04ad996460304afa8) |
+| 18 | Grant a fresh mandate to the Ops Agent | `ramsGrantMandate` | confirmed (the original mandate stayed revoked from step 15 — this is a new one, same terms) | [`0x6e24c2be46...`](https://sepolia.etherscan.io/tx/0x6e24c2be46b5d074ec79462dff5737695b2974718f22d8668b4367aa842ee42c) |
+| 19 | **Ops Agent executes a real 25 USDT payout** | `ramsExecute` | confirmed — investor's USDT balance: 0 → 25. Issuer's: 100 → 75. | [`0x16a5feea44...`](https://sepolia.etherscan.io/tx/0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac) |
+
+This is the complete loop: a bounded agent moving real value it was never trusted with unilaterally, under a rule enforced by a contract, verified by the recipient's balance actually changing — not just an authorization that would have worked if funded.
 
 ## Pending on funding / access
 

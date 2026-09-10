@@ -11,15 +11,20 @@ Watch for these, reported by other participants in the programme's Discord as of
 
 ## Found during this build
 
-### Sandbox mock USDT has no self-service mint
+### Sandbox mock USDT has no self-service mint — WRONG. Our bug, not Brickken's. Corrected 2026-09-10.
+
+**This entry originally reported the wrong root cause. Leaving the full trail rather than deleting it, because being visibly wrong once and catching it is more honest than a clean record.**
 
 - **Method / endpoint:** direct contract call to the sandbox USDT payment token (`0x28d2B01854D0aBec267a3DDcad9163580E6E8604`, Ethereum Sepolia), not a Brickken API endpoint.
 - **Date hit:** 2026-09-07.
-- **Request (redacted):** simulated `mint(address,uint256)` (selector `0x40c10f19`) from the issuer wallet via `eth_call`.
+- **Original (wrong) request:** simulated `mint(address,uint256)` (selector `0x40c10f19`) from the issuer wallet via `eth_call`, with a hand-typed hex-encoded `uint256` argument.
 - **Observed response / error:** `execution reverted` with empty revert data.
-- **Root cause (if known):** the mint function is access-controlled (owner-only), as expected for a shared sandbox token — an open mint would let any participant inflate the supply.
-- **Workaround used:** none yet — requested Brickken fund the issuer wallet with test USDT directly (or point us at a supported faucet) rather than trying to self-mint.
-- **Reported to Brickken team:** yes, via Discord/tech@brickken.com, bundled with the RAMS setup ask — see `docs/build-plan.md`.
+- **What we concluded, incorrectly:** that `mint` was access-controlled (owner-only), "as expected for a shared sandbox token." This was plausible-sounding and wrong, and we escalated it to Brickken on that basis rather than checking our own encoding first.
+- **Actual root cause, found 2026-09-10:** our hand-typed argument was 62 hex characters instead of the required 64 — two leading zero-bytes short. That misaligns every byte of a manually-assembled ABI call, so the EVM decoded garbage and reverted for a reason that had nothing to do with permissions. `mint` was open the entire time. Confirmed by re-running the identical call with the argument correctly zero-padded via `hex(amount)[2:].zfill(64)` instead of typed by hand — it succeeded immediately (`eth_call` returned `0x`, the correct empty-success result for a void function).
+- **How we found it:** Brickken (Bassie's teammate on the thread) replied to our funding request pointing out `mint(address,uint256)` should just work — which prompted re-testing instead of taking the original diagnosis on faith.
+- **Consequence:** minted 100 USDT directly (`scripts/mint-usdt.mjs`), which unblocked a real payout — see `docs/transactions.md`, the actual value-moving `ramsExecute`.
+- **Lesson, stated plainly:** never hand-assemble ABI calldata for a "let me just check" test without verifying its length/shape first — a malformed call and an intentionally-reverted call produce the identical error at this layer (`execution reverted`, empty data), and it's easy to reach for the more interesting-sounding explanation. The fix, going forward, is what `scripts/mint-usdt.mjs` and `scripts/tx.mjs` already do: derive calldata programmatically (`viem`'s `encodeFunctionData`, or Brickken's own prepare endpoint), never type it by hand.
+- **Reported to Brickken team:** yes, the original (wrong) escalation went out 2026-09-07. Owe them a correction alongside the thanks — noted, sending it.
 
 ### `POST /faucet/bkn` can take well over the "instant" impression the docs give
 
