@@ -16,6 +16,11 @@
     --critical-bg: #FBE9E9;
     --pending: #5C6584;
     --pending-bg: #EBEFFB;
+    --accent-2-bg: #E3E7F6;
+    --pending-glow: rgba(92,101,132,0.16);
+    --success-glow: rgba(30,143,111,0.20);
+    --critical-glow: rgba(193,59,62,0.18);
+    --accent-2-glow: rgba(22,33,62,0.16);
     --line: #C7D2F0;
     --shadow: 0 1px 2px rgba(22,33,62,0.06), 0 8px 24px -12px rgba(22,33,62,0.16);
   }
@@ -27,6 +32,11 @@
       --success: #4FBE94; --success-bg: #123128;
       --critical: #E5787B; --critical-bg: #2E1518;
       --pending: #8592BD; --pending-bg: #17203A;
+      --accent-2-bg: #1E2650;
+      --pending-glow: rgba(133,146,189,0.20);
+      --success-glow: rgba(79,190,148,0.24);
+      --critical-glow: rgba(229,120,123,0.22);
+      --accent-2-glow: rgba(151,166,224,0.20);
       --line: #2E3A5E;
       --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 32px -14px rgba(0,0,0,0.6);
     }
@@ -90,16 +100,37 @@
   .section-intro { color: var(--text-dim); font-size: 14px; max-width: 62ch; margin-bottom: 24px; }
 
   /* ---------- The sequence (hero centerpiece) ---------- */
-  .sequence { position: relative; padding-left: 32px; }
+  .sequence { position: relative; z-index: 0; padding-left: 32px; }
   .sequence::before { content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
-  .seq-step { position: relative; padding-bottom: 28px; }
+  /* Ambient wash: a soft glow that shifts hue with whichever step is in focus while
+     scrolling -- grant/authorize/payout read calm, refusals read warm, revoke reads
+     heavier. Same semantic colors the chips elsewhere on the page already use, just
+     given room to breathe. Pure enhancement: with no JS/no scroll support it just
+     stays on the calm default tint below, nothing breaks. */
+  .seq-ambient {
+    position: absolute; inset: -32px -20px -32px -80px; z-index: -1;
+    background: radial-gradient(620px 480px at 4% 30%, var(--wash, var(--pending-glow)), transparent 70%);
+    filter: blur(38px);
+    transition: background 900ms ease;
+    pointer-events: none;
+  }
+  .sequence[data-active="ok"] .seq-ambient { --wash: var(--success-glow); }
+  .sequence[data-active="no"] .seq-ambient { --wash: var(--critical-glow); }
+  .sequence[data-active="revoke"] .seq-ambient { --wash: var(--accent-2-glow); }
+  .seq-step { position: relative; padding-bottom: 28px; opacity: 1; transition: opacity 500ms ease; }
   .seq-step:last-child { padding-bottom: 0; }
+  .sequence.has-active .seq-step:not(.is-active) { opacity: 0.62; }
   .seq-node {
     position: absolute; left: -32px; top: 2px; width: 20px; height: 20px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
     border: 2px solid var(--surface); box-shadow: 0 0 0 2px var(--node-color, var(--pending));
     background: var(--node-color, var(--pending)); color: var(--bg);
+    transition: transform 400ms ease, box-shadow 400ms ease;
+  }
+  .seq-step.is-active .seq-node { transform: scale(1.2); box-shadow: 0 0 0 2px var(--surface), 0 0 18px 3px var(--node-color); }
+  @media (prefers-reduced-motion: reduce) {
+    .seq-ambient, .seq-node, .seq-step { transition: none !important; }
   }
   .seq-step.grant .seq-node { --node-color: var(--pending); }
   .seq-step.ok .seq-node { --node-color: var(--success); }
@@ -199,6 +230,7 @@
     <div class="section-intro">Every step below happened in this order, on the real chain, in one working session &mdash; not staged, not simulated. The Ops Agent's authority is granted, tested, refused when it oversteps, cut off by a different agent entirely, confirmed gone, then proven to move real money once it exists.</div>
 
     <div class="sequence">
+      <div class="seq-ambient" aria-hidden="true"></div>
       <div class="seq-step grant">
         <div class="seq-node">1</div>
         <div class="seq-verb">Grant</div>
@@ -446,6 +478,48 @@
     }
   }
   updateDeadline();
+
+  // ---------- Sequence ambient state ----------
+  // As the six-step sequence scrolls past, track whichever step sits nearest
+  // vertical center and mark it active: its node glows, the ambient wash behind
+  // the whole sequence shifts to that step's own semantic color (grant/ok/no/
+  // revoke -- the same colors the chips elsewhere already use), and the other
+  // steps dim slightly, so the reader's eye and the story's tone move together.
+  // No IntersectionObserver support, or no JS at all -- the sequence just stays
+  // at its calm default tint with every step at full opacity. Nothing breaks.
+  (function () {
+    const seq = document.querySelector(".sequence");
+    if (!seq || !("IntersectionObserver" in window)) return;
+    const steps = Array.from(seq.querySelectorAll(".seq-step"));
+    const states = ["grant", "ok", "no", "revoke"];
+
+    function setActive(step) {
+      steps.forEach((s) => s.classList.toggle("is-active", s === step));
+      seq.dataset.active = states.find((c) => step.classList.contains(c)) || "grant";
+      seq.classList.add("has-active");
+    }
+
+    // IntersectionObserver callbacks only report elements whose intersection
+    // *changed* since the last firing, not every currently-intersecting element --
+    // so track the in-view set ourselves rather than trusting each batch alone.
+    const inView = new Set();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) inView.add(e.target); else inView.delete(e.target); });
+        if (!inView.size) return;
+        const center = window.innerHeight / 2;
+        let best = null, bestDist = Infinity;
+        for (const el of inView) {
+          const r = el.getBoundingClientRect();
+          const dist = Math.abs(r.top + r.height / 2 - center);
+          if (dist < bestDist) { bestDist = dist; best = el; }
+        }
+        setActive(best);
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+    );
+    steps.forEach((s) => io.observe(s));
+  })();
 
   // ---------- Live balances ----------
   // Reads real current state from a public Sepolia RPC, in the visitor's
