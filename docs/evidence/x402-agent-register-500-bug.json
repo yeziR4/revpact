@@ -1,0 +1,27 @@
+{
+  "call": "POST /x402/agent/register (prepare) then POST /send-transactions with X-PAYMENT (send + pay)",
+  "date": "2026-09-12",
+  "payer": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+  "prepare_response_ok": true,
+  "prepare_notes": "executionMode is brickken-relayed; signerAddress must be omitted (400 if present: 'signerAddress must be omitted for brickken-relayed execution'). Returns txId, transactions (from = Brickken's own relayer wallet, not ours), and x402Requirements pointing at POST /send-transactions.",
+  "send_x402Requirements": {
+    "scheme": "exact",
+    "network": "eip155:84532",
+    "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    "amount": "10000",
+    "extra": { "name": "USDC", "version": "2", "assetTransferMethod": "eip3009", "chainId": "84532" }
+  },
+  "send_response": {
+    "status": 500,
+    "body": {
+      "errors": {
+        "messages": "Error not handled [SyntaxError, Named export 'AxiosHeaders' not found. The requested module 'axios' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from 'axios';\nconst { AxiosHeaders } = pkg;\n]",
+        "status": 500,
+        "name": "Server Error"
+      }
+    }
+  },
+  "reproduced": "Twice, from a fresh prepare each time (fresh txId/agentUuid), identical 500 both times -- deterministic, not a transient flake.",
+  "verified_no_charge": "Base Sepolia USDC balance confirmed unchanged (20.00) after both failed attempts via direct eth_call -- the x402 payment reservation was released on failure, exactly as Brickken's docs describe.",
+  "root_cause": "Server-side crash inside Brickken's own settlement code for this route: an ESM/CommonJS interop bug importing axios (a named export that only exists on axios's CJS build), not anything in our request. Same X-PAYMENT construction (EIP-3009, exact scheme) worked cleanly seconds earlier against POST /faucet/bkn."
+}

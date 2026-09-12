@@ -1,0 +1,24 @@
+{
+  "call": "POST /faucet/bkn, paid via genuine x402 (EIP-3009 signed authorization), not x-api-key",
+  "date": "2026-09-12",
+  "payer": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+  "x402Requirements": {
+    "scheme": "exact",
+    "network": "eip155:11155111",
+    "asset": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    "amount": "10000",
+    "payTo": "0x6b0173489007dE9E2e619eccd98E8fa9c610849a",
+    "extra": { "name": "USDC", "version": "2", "assetTransferMethod": "eip3009", "chainId": "11155111" }
+  },
+  "response": {
+    "claimId": "853d72ce-05c4-4a9b-8857-2204ee8b23af",
+    "status": "confirmed",
+    "chainId": "11155111",
+    "recipientAddress": "0x72842560b8b969fab80453EdA1e7eDA7BFc35cBA",
+    "amount": "100",
+    "token": { "address": "0x2458fB1620ff84019d73216fF20aA1F82Bc8E4CC", "symbol": "BKN", "decimals": 18 },
+    "transactionHash": "0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a",
+    "explorerUrl": "https://sepolia.etherscan.io/tx/0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a"
+  },
+  "verified": "Issuer wallet's Ethereum Sepolia USDC balance moved 20.00 -> 19.99, confirmed via direct eth_call balanceOf, independent of Brickken's own response."
+}

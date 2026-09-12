@@ -68,7 +68,7 @@ src/rules/                     the compliance trigger engine (pure logic, chain-
 
 ## Status
 
-✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 19 real Sepolia transactions and API calls, run through `scripts/tx.mjs` against the live sandbox. Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 20 real Sepolia transactions and API calls against the live sandbox (19 via `scripts/tx.mjs`'s prepare→sign→send→poll flow, plus a genuine agent-signed x402 payment via `scripts/x402-pay.mjs`). Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
 The complete story, all confirmed on-chain or rejected by the live contract, same session:
 
@@ -82,7 +82,7 @@ The complete story, all confirmed on-chain or rejected by the live contract, sam
 
 Every mechanism the RAMS mandate design claims — grant, authorize, cap-reject, revoke, post-revoke-reject, and an actual value transfer — is proven live, on-chain, with real balances that changed. That's points 2 and 3 from "Why this shape," above, and it's complete.
 
-**Not done, stated plainly:** point 1 — an agent paying for its own faucet claim via x402, and registering an ERC-8004 identity. Both need funding on Base Sepolia that never arrived during the build window (see `docs/transactions.md`, "Pending on funding / access"). The BKN faucet claim that *is* in the log (step 1 above) went through Brickken's `x-api-key` auth, not a genuine agent-initiated x402 payment — the harder, more differentiated half of the build (the mandate lifecycle) is what's finished and proven; the self-funding half is real but incomplete, and this line says so rather than folding it into a blanket "done."
+**Point 1, updated 2026-09-12 — half closed, stated plainly:** an agent paying for its own API call via x402 is now genuinely proven for the BKN faucet: funded the issuer wallet with test USDC on Ethereum Sepolia (Circle's public faucet), signed a real EIP-3009 payment authorization, and settled it against `POST /faucet/bkn` — `200 confirmed`, tx [`0x749b7051...`](https://sepolia.etherscan.io/tx/0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a), verified independently by the issuer wallet's USDC balance actually moving (20.00 → 19.99). The ERC-8004 identity registration leg is still not done — not from missing funding this time, but from a reproduced Brickken server bug (`500`, an ESM/CommonJS `axios` import crash in their own `/send-transactions` settlement code) hit twice with a fresh prepare each time. Full detail and evidence in `known-issues.md` and `docs/evidence/`. The mandate lifecycle (points 2 and 3) remains the harder, fully-finished half; self-funding is now more done than not, and this line still says exactly where the line is.
 
 ## Judging alignment
 
@@ -90,7 +90,7 @@ Every mechanism the RAMS mandate design claims — grant, authorize, cap-reject,
 |---|---|
 | Most innovative use case | Revenue-share tokenization isn't itself new, but a *mandate-bounded agent hierarchy operating it* — one agent that can only pay, one that can only kill — is a materially different pattern than "agent watches asset and reacts." |
 | Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires. |
-| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain. The x402 self-payment and ERC-8004 identity leg (see Status) needed Base Sepolia funding that didn't arrive during the build — scoped honestly as incomplete rather than folded into the claim. |
+| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain, plus a genuine agent-signed x402 payment (see Status). ERC-8004 identity registration hit a reproduced Brickken server bug rather than a funding gap — found, documented, and reported rather than papered over. |
 | Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. |
 
 ## AI disclosure

@@ -52,10 +52,22 @@ Test USDT turned out to be self-serviceable the whole time — see `known-issues
 
 This is the complete loop: a bounded agent moving real value it was never trusted with unilaterally, under a rule enforced by a contract, verified by the recipient's balance actually changing — not just an authorization that would have worked if funded.
 
-## Pending on funding / access
+### A genuine agent-paid API call (2026-09-12)
 
-- **Dividend distribution**: blocked — issuer wallet holds 0 test USDT (the sandbox's configured payment token) and its `mint()` is access-controlled (reverts for us). Needs Brickken to fund the issuer wallet with test USDT, or point us at a supported faucet.
-- **ERC-8004 registration / RAMS**: blocked — needs Base Sepolia funding (ETH for client-signed gas, or USDC for an x402/relayed send) in the issuer wallet, and a RAMS `identityRef` + dedicated executor from Brickken (shared-sandbox compliance provider is admin-only).
+| # | Step | Method | Result | Tx hash |
+|---|------|--------|--------|---------|
+| 20 | **Agent pays for its own faucet claim, via x402** | `POST /faucet/bkn`, paid with a signed EIP-3009 authorization instead of an API key | confirmed — issuer wallet's USDC balance: 20.00 → 19.99 | [`0x749b7051e7...`](https://sepolia.etherscan.io/tx/0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a) |
+
+The agent's own signature pays the 0.01 USDC charge — no `x-api-key`, no human touching a faucet UI. See `docs/evidence/x402-bkn-faucet.json` for the full request/response, and "The self-funding leg" below for the ERC-8004 leg that's still blocked (by a Brickken server bug, not funding).
+
+## The self-funding leg (2026-09-12)
+
+- **BKN faucet, closed for real**: funded the issuer wallet with test USDC on Ethereum Sepolia (Circle's public faucet), signed a real EIP-3009 x402 payment authorization, and settled it against `POST /faucet/bkn` — `200 confirmed`, tx [`0x749b7051...`](https://sepolia.etherscan.io/tx/0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a). Verified independently: the issuer wallet's USDC balance moved 20.00 → 19.99. See `docs/evidence/x402-bkn-faucet.json`.
+- **ERC-8004 registration**: still blocked, but not by funding anymore. `POST /x402/agent/register` prepares cleanly (`brickken-relayed` mode — Brickken's own relayer broadcasts and pays gas, we only pay the x402 USDC charge), but settling it via `POST /send-transactions` hits a reproduced `500` server bug in Brickken's own settlement code (an ESM/CommonJS `axios` import crash), hit twice with a fresh prepare each time. Full repro in `known-issues.md` and `docs/evidence/x402-agent-register-500-bug.json`. Reported to Brickken.
+
+## Out of scope for this build
+
+- **`dividendDistribution` (the Dapp API method)**: not exercised. The STO ended in rollback (step 7 — soft cap unmet, no investors), so there was never a successful offering with real investors to distribute dividends to. The build's actual value-moving payout (steps 17–19) went through a fresh RAMS mandate's `ramsExecute`, not this method — a deliberate substitution, not a blocked dependency.
 
 ## Reproducing any of the above
 

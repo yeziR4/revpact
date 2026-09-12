@@ -214,7 +214,7 @@
 
   <div class="status-rail">
     <span class="chip ok">● Ethereum Sepolia</span>
-    <span class="chip">19 real calls</span>
+    <span class="chip">20 real calls</span>
     <span class="chip" id="live-chip" hidden></span>
     <div class="links">
       <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repo &rarr;</a>
@@ -418,7 +418,8 @@
     { step: 15, method: "ramsRevokeMandate", desc: "Compliance revokes the mandate (sequence step 4)", hash: "0xbf3954829cc94549bbbe970d7613e5d0ec32200b7bccea4adafd3e231dbfef36" },
     { step: 17, method: "mint", desc: "Minted 100 test USDT to the issuer (direct contract call)", hash: "0x2184eb6a893b23893f8254e88ccfa72859c8d1b36a7c8db04ad996460304afa8" },
     { step: 18, method: "ramsGrantMandate", desc: "Granted a fresh mandate, same terms", hash: "0x6e24c2be46b5d074ec79462dff5737695b2974718f22d8668b4367aa842ee42c" },
-    { step: 19, method: "ramsExecute", desc: "Real 25 USDT payout (sequence step 6)", hash: "0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" }
+    { step: 19, method: "ramsExecute", desc: "Real 25 USDT payout (sequence step 6)", hash: "0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" },
+    { step: 20, method: "faucet/bkn", desc: "Agent pays for its own faucet claim — signed x402 payment, not an API key", hash: "0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a" }
   ];
   const rejections = [
     { step: 14, desc: "Over-cap attempt, refused (sequence step 3)", reason: "withinTransactionCap, withinCumulativeCap" },
@@ -452,7 +453,9 @@
     { state: "resolved", text: "<b>RAMS principal eligibility</b> — a ComplianceProvider mismatch from a Brickken Sandbox redeployment. Fixed Sep 10." },
     { state: "resolved", text: "<b>RAMS executor bug</b> — the first dedicated executor couldn't read its own frozen status. Brickken replaced it same day; the full sequence above ran immediately after." },
     { state: "resolved", text: "<b>Test USDT funding</b> — turned out to be self-serviceable the whole time. We'd misdiagnosed our own malformed contract call as an access-control restriction and escalated it to Brickken on that basis. They pointed us back at it; a corrected call minted 100 USDT directly. Full correction, not just a fix, in known-issues.md." },
-    { state: "resolved", text: "<b>Real payout</b> — with funds in hand, granted a fresh mandate and executed for real. Investor's balance moved 0 → 25 USDT on-chain, not just an authorized-in-principle call." }
+    { state: "resolved", text: "<b>Real payout</b> — with funds in hand, granted a fresh mandate and executed for real. Investor's balance moved 0 → 25 USDT on-chain, not just an authorized-in-principle call." },
+    { state: "resolved", text: "<b>Agent self-payment (x402)</b> — the BKN faucet claim now runs on a genuine agent-signed x402 payment (EIP-3009), not an API key. Balance verified moving 20.00 → 19.99 USDC." },
+    { state: "open", text: "<b>ERC-8004 identity registration</b> — still blocked, but by a reproduced Brickken server bug (a 500 crashing on their own settlement code), not by funding. Reported; full repro in known-issues.md." }
   ];
   const statusList = document.getElementById("status-list");
   for (const s of statuses) {

@@ -87,6 +87,28 @@ Watch for these, reported by other participants in the programme's Discord as of
 - **Workaround used:** corrected `docs/evidence/newTokenization.json`, `docs/transactions.md`, and the dashboard (`site/index.html` / `docs/index.html`) to the verified addresses, with the swap and correction noted inline rather than silently edited.
 - **Reported to Brickken team:** no — our own transcription error, not theirs.
 
+### The x402 self-funding gap, closed for real (BKN faucet) and half-closed (ERC-8004) — 2026-09-12
+
+**Correction first:** the earlier entries in `docs/transactions.md`/README said the x402-paid BKN faucet claim "needs Base Sepolia funding first." That was never actually tested — it was an assumption carried over from the ERC-8004 gap and wrongly generalized. Firing the real request (no API key) and reading the actual `PAYMENT-REQUIRED` challenge shows the BKN faucet's x402 payment settles in USDC on **Ethereum Sepolia**, not Base Sepolia at all.
+
+**BKN faucet, closed for real:**
+- **Method / endpoint:** `POST /faucet/bkn`, paid via genuine x402 (EIP-3009 signed authorization from the issuer wallet), not `x-api-key`.
+- **Date:** 2026-09-12.
+- **What we did:** funded the issuer wallet with 20 test USDC on Ethereum Sepolia via Circle's public faucet (faucet.circle.com — no mainnet-balance gate, unlike the old Base faucet snag from early in the build). Built the X-PAYMENT payload ourselves (EIP-712 `TransferWithAuthorization` over EIP-3009, signed locally with `viem`) and retried the 402'd request.
+- **Result:** `200 confirmed`, real transaction `0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a`. Verified independently via a direct `eth_call` `balanceOf` read: the issuer wallet's USDC balance moved 20.00 → 19.99, exactly the 0.01 USDC charge. See `docs/evidence/x402-bkn-faucet.json`.
+- **What this means:** point 1 from the README's "Why this shape" — an agent paying for its own API call — is now genuinely done for the BKN faucet leg, with the agent's own signature paying, not a human's API key.
+
+**ERC-8004 registration, still blocked — but now by a specific, reproduced Brickken bug, not by funding:**
+- **Method / endpoint:** `POST /x402/agent/register` (prepare, succeeds) → `POST /send-transactions` with `X-PAYMENT` (send + settle, fails).
+- **Date hit:** 2026-09-12.
+- **Request (redacted):** same X-PAYMENT construction that worked cleanly against the BKN faucet seconds earlier — EIP-3009 `exact` scheme, correct `network`/`asset`/`amount`/`payTo` read live from the 402 challenge, funded with 20 test USDC on Base Sepolia (also from Circle's faucet). `executionMode` for this route is `brickken-relayed` (confirmed by trial: including `signerAddress` is rejected with `"signerAddress must be omitted for brickken-relayed execution"` — Brickken's own relayer wallet broadcasts and pays gas, we only pay the x402 USDC charge).
+- **Observed response / error:** `500 Server Error` — `"Error not handled [SyntaxError, Named export 'AxiosHeaders' not found. The requested module 'axios' is a CommonJS module...]"`.
+- **Why this is Brickken's bug, not ours:** identical payload construction succeeded immediately against `POST /faucet/bkn`. This is a crash inside Brickken's own settlement code on `POST /send-transactions` for this specific route — an ESM/CommonJS interop bug importing `axios` — not a request-shape issue on our end.
+- **Reproduced:** twice, from a fresh `prepare` each time (fresh `txId`, fresh `agentUuid`), identical 500 both times. Confirmed via a direct `eth_call` that neither attempt actually charged the USDC (balance held at 20.00 both times) — the payment reservation was released on failure, exactly as Brickken's docs describe.
+- **Workaround used:** none available — this is a 500 inside Brickken's own payment-settlement code, before it reaches any of our request fields, the same category as the earlier `ramsExecute`/`isFrozen` server bug.
+- **Reported to Brickken team:** yes, 2026-09-12, with the exact repro above.
+- **Net honest status:** one of the two self-funding legs (BKN faucet) is genuinely closed with a real x402-paid transaction. The other (ERC-8004 identity) is blocked by a Brickken-side server bug we found and reported, not by missing funding — worth revisiting if Brickken fixes it before the deadline.
+
 ## Template for entries found during this build
 
 ```
