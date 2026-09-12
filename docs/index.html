@@ -215,7 +215,6 @@
   <div class="status-rail">
     <span class="chip ok">● Ethereum Sepolia</span>
     <span class="chip">19 real calls</span>
-    <span class="chip" id="deadline-chip">calculating&hellip;</span>
     <span class="chip" id="live-chip" hidden></span>
     <div class="links">
       <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repo &rarr;</a>
@@ -462,22 +461,6 @@
     row.innerHTML = `<span class="mark">${s.state === "resolved" ? "✓" : "○"}</span><span>${s.text}</span>`;
     statusList.appendChild(row);
   }
-
-  function updateDeadline() {
-    const deadline = new Date("2026-09-17T21:59:00Z");
-    const msLeft = deadline - new Date();
-    const chip = document.getElementById("deadline-chip");
-    if (msLeft > 0) {
-      const d = Math.floor(msLeft / 86400000);
-      const h = Math.floor((msLeft % 86400000) / 3600000);
-      chip.textContent = `${d}d ${h}h to deadline`;
-      if (d <= 3) chip.classList.add("warn");
-    } else {
-      chip.textContent = "submission closed";
-      chip.classList.add("warn");
-    }
-  }
-  updateDeadline();
 
   // ---------- Sequence ambient state ----------
   // As the six-step sequence scrolls past, track whichever step sits nearest
