@@ -80,7 +80,9 @@ The complete story, all confirmed on-chain or rejected by the live contract, sam
 6. **Ops Agent attempts the same transfer again** — rejected: `"mandate does not allow this execution: notRevoked"`. Its authority is provably gone.
 7. **A fresh mandate, funded, and a real payout**: minted test USDT directly (turned out to be self-serviceable — see the correction in `known-issues.md`), granted a new mandate on identical terms, and executed for real. Investor's USDT balance: 0 → 25. Issuer's: 100 → 75.
 
-Nothing left blocking. Every mechanism the design claims — grant, authorize, cap-reject, revoke, post-revoke-reject, and an actual value transfer — is proven live, on-chain, with real balances that changed.
+Every mechanism the RAMS mandate design claims — grant, authorize, cap-reject, revoke, post-revoke-reject, and an actual value transfer — is proven live, on-chain, with real balances that changed. That's points 2 and 3 from "Why this shape," above, and it's complete.
+
+**Not done, stated plainly:** point 1 — an agent paying for its own faucet claim via x402, and registering an ERC-8004 identity. Both need funding on Base Sepolia that never arrived during the build window (see `docs/transactions.md`, "Pending on funding / access"). The BKN faucet claim that *is* in the log (step 1 above) went through Brickken's `x-api-key` auth, not a genuine agent-initiated x402 payment — the harder, more differentiated half of the build (the mandate lifecycle) is what's finished and proven; the self-funding half is real but incomplete, and this line says so rather than folding it into a blanket "done."
 
 ## Judging alignment
 
@@ -88,7 +90,7 @@ Nothing left blocking. Every mechanism the design claims — grant, authorize, c
 |---|---|
 | Most innovative use case | Revenue-share tokenization isn't itself new, but a *mandate-bounded agent hierarchy operating it* — one agent that can only pay, one that can only kill — is a materially different pattern than "agent watches asset and reacts." |
 | Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires. |
-| Best technical execution & API integration | Closes the full agentic stack — x402 self-payment, ERC-8004 identity, RAMS delegate/execute/revoke, Dapp API lifecycle — rather than one or two pieces of it. |
+| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain. The x402 self-payment and ERC-8004 identity leg (see Status) needed Base Sepolia funding that didn't arrive during the build — scoped honestly as incomplete rather than folded into the claim. |
 | Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. |
 
 ## AI disclosure
