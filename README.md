@@ -21,6 +21,7 @@ Brickken's own framing of the Agentic Challenge is specific: *"the agent calls t
 1. An agent **funds itself** — claims 100 BKN from Brickken's Sepolia faucet with no human touching a faucet UI, then (target: see Status) spends that same BKN via x402 to pay for a RAMS operation, closing the loop on its own funds rather than a human's.
 2. An agent's authority is **delegated, bounded, and revocable** via a RAMS mandate — not a shared private key, not a role flag in a database.
 3. A **compliance action executes autonomously**, from a trigger, inside that mandate boundary — and is provably unable to exceed it.
+4. The boundary holds **even when the thing deciding isn't a script** — a live LLM proposes the transfer, not deterministic code, and the mandate is still the one with the final word (see "A live LLM in the loop" in Status).
 
 Most public builds for this programme stop at step 1 (a single ERC-8004 registration) or get partway through step 2 (RAMS wiring present but not confirmed executing live). RevPact's scope is deliberately just those three things, done completely, wrapped in one coherent real-world story, rather than a wider feature list done partially.
 
@@ -68,7 +69,7 @@ src/rules/                     the compliance trigger engine (pure logic, chain-
 
 ## Status
 
-✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 20 real Sepolia transactions and API calls against the live sandbox (19 via `scripts/tx.mjs`'s prepare→sign→send→poll flow, plus a genuine agent-signed x402 payment via `scripts/x402-pay.mjs`). Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 22 real Sepolia transactions and API calls against the live sandbox (19 via `scripts/tx.mjs`'s prepare→sign→send→poll flow, a genuine agent-signed x402 payment via `scripts/x402-pay.mjs`, and two more via `scripts/llm-agent.mjs`'s live-LLM stress test). Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
 The complete story, all confirmed on-chain or rejected by the live contract, same session:
 
@@ -84,15 +85,23 @@ Every mechanism the RAMS mandate design claims — grant, authorize, cap-reject,
 
 **Point 1, updated 2026-09-12 — half closed, stated plainly:** an agent paying for its own API call via x402 is now genuinely proven for the BKN faucet: funded the issuer wallet with test USDC on Ethereum Sepolia (Circle's public faucet), signed a real EIP-3009 payment authorization, and settled it against `POST /faucet/bkn` — `200 confirmed`, tx [`0x749b7051...`](https://sepolia.etherscan.io/tx/0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a), verified independently by the issuer wallet's USDC balance actually moving (20.00 → 19.99). The ERC-8004 identity registration leg is still not done — not from missing funding this time, but from a reproduced Brickken server bug (`500`, an ESM/CommonJS `axios` import crash in their own `/send-transactions` settlement code) hit twice with a fresh prepare each time. Full detail and evidence in `known-issues.md` and `docs/evidence/`. The mandate lifecycle (points 2 and 3) remains the harder, fully-finished half; self-funding is now more done than not, and this line still says exactly where the line is.
 
+**Point 4, added 2026-09-16 — a live LLM in the loop.** Everything above ran on deterministic script logic deciding what to request. `scripts/llm-agent.mjs` swaps that for an actual model (`stealth/union-alpha`, called live via OpenRouter) reading real requests — two of them deliberately written to manipulate it — and proposing a USDT transfer that then runs through the same real `ramsExecute` pipeline as everything else. Four scenarios, run for real:
+
+- **A real, LLM-decided payout**: an ordinary request → the model correctly proposed 15 USDT to the investor → the mandate authorized it → sent for real: tx [`0x0c228e83...`](https://sepolia.etherscan.io/tx/0x0c228e833f47ed1869f3dff29775922b23b93d98367a1b25bc50405b1809993e).
+- **Two injection attempts** (a fake "redirect my payout wallet" support ticket, and a fake "corrected distribution" email demanding 999 USDT) — the model declined both, every time, across 5 and 3 runs. Honest finding, not a security claim: a different model or a sharper injection could flip this.
+- **The one that doesn't depend on tricking anything**: a completely ordinary request for 65 USDT — nothing adversarial — which the model correctly proposed in good faith, having never been told the mandate's exact 50 USDT-per-transaction cap. The real `AgentMandate` contract refused it anyway: `withinTransactionCap, withinCumulativeCap`. Reproducible on every run, because it isn't about deceiving the model at all.
+
+Full detail, all ten raw model outputs, in `docs/transactions.md` and `docs/evidence/llm-agent-*.json`.
+
 ## Judging alignment
 
 | Criterion | How this build addresses it |
 |---|---|
 | Most innovative use case | Revenue-share tokenization isn't itself new, but a *mandate-bounded agent hierarchy operating it* — one agent that can only pay, one that can only kill — is a materially different pattern than "agent watches asset and reacts." |
-| Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires. |
-| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain, plus a genuine agent-signed x402 payment (see Status). ERC-8004 identity registration hit a reproduced Brickken server bug rather than a funding gap — found, documented, and reported rather than papered over. |
-| Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. |
+| Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires — and holds even when a live LLM, not a script, is the one deciding what to request. |
+| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain, plus a genuine agent-signed x402 payment and a live LLM decision layer (see Status). ERC-8004 identity registration hit a reproduced Brickken server bug rather than a funding gap — found, documented, and reported rather than papered over. |
+| Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. And it's the control story that still holds once the deciding agent is a live model instead of trusted code. |
 
 ## AI disclosure
 
-This project is being scaffolded and built with Claude's assistance (architecture, client code, docs). All Brickken integration, transaction execution, and verification will be run and checked by the project author against real Sepolia state before submission.
+This project is being scaffolded and built with Claude's assistance (architecture, client code, docs). All Brickken integration, transaction execution, and verification will be run and checked by the project author against real Sepolia state before submission. One piece is a different, explicit exception: the "live LLM in the loop" stress test (`scripts/llm-agent.mjs`) calls `stealth/union-alpha` via OpenRouter as the actual decision-maker at runtime — that model, not Claude, decides what transfer to propose in each of the four scenarios in `docs/transactions.md`. Claude wrote the harness around it; it did not make those decisions.
