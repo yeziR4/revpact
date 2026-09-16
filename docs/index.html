@@ -358,6 +358,7 @@
         <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok">COMPLIANT</span></span></div>
         <div class="kv"><span class="k">First mandate</span><span class="v"><span class="chip warn">revoked (by design)</span></span></div>
         <div class="kv"><span class="k">Second mandate</span><span class="v"><span class="chip warn">revoked (by an autonomous trigger)</span></span></div>
+        <div class="kv"><span class="k">Third mandate</span><span class="v"><span class="chip ok">active, extended by signature alone</span></span></div>
       </div>
     </div>
   </section>
@@ -460,6 +461,32 @@
   </section>
 
   <section>
+    <div class="kicker">Custody</div>
+    <h2>A signature is not a transaction</h2>
+    <div class="section-intro">Everything above used direct signing: whoever authorizes also pays gas and broadcasts. RAMS supports a second mode for its lifecycle operations that this build had never touched &mdash; the principal signs an <b>EIP-712 payload off-chain</b>, zero gas, no transaction at all, and any wallet can then broadcast the already-authorized change.</div>
+    <div class="trigger-card">
+      <div class="trigger-flow">
+        <div class="trigger-step">
+          <div class="t-label">Issuer signs, off-chain</div>
+          Zero gas. No transaction. Just a signature.
+        </div>
+        <div class="trigger-arrow">&rarr;</div>
+        <div class="trigger-step">
+          <div class="t-label">Compliance Agent broadcasts</div>
+          Relays it. Pays its own gas. Gains <b>no new authority</b> &mdash; it still can't move a token.
+        </div>
+        <div class="trigger-arrow">&rarr;</div>
+        <div class="trigger-step">
+          <div class="t-label">Mandate extended, for real</div>
+          <code>validUntil</code> moves by exactly the signed amount
+        </div>
+      </div>
+      <div class="verdict">Result: <a href="https://sepolia.etherscan.io/tx/0x3e9253c6df141ac4d33c86f82cf87aca86009291f74dd2d745e32ec7a6b1f982" target="_blank" rel="noopener" class="mono">0x3e9253c6&hellip;6b1f982 &rarr;</a> &mdash; <code>validUntil</code>: 1789590276 &rarr; 1789593876 (exactly +3600s), verified against a follow-up read.</div>
+      <div class="verified-twice">The point: <b>signing authorizes, broadcasting merely delivers</b>. The Compliance Agent relaying this doesn't blur its one real power (revoke-only) into a second one &mdash; it's still just carrying someone else's already-signed intent. This is the actual precondition for cold-storage custody: the principal's key never needs to touch gas or a hot wallet at all.</div>
+    </div>
+  </section>
+
+  <section>
     <div class="kicker">Everything else</div>
     <h2>Full audit trail</h2>
     <div class="section-intro">The sequence above is the argument. This is the receipts &mdash; every real call this build made, in order, including the tokenization lifecycle that isn't the headline but still has to work.</div>
@@ -505,7 +532,9 @@
     { step: 19, method: "ramsExecute", desc: "Real 25 USDT payout (sequence step 6)", hash: "0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" },
     { step: 20, method: "faucet/bkn", desc: "Agent pays for its own faucet claim — signed x402 payment, not an API key", hash: "0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a" },
     { step: 21, method: "ramsExecute", desc: "LLM-decided real payout — live agent stress test, scenario A", hash: "0x0c228e833f47ed1869f3dff29775922b23b93d98367a1b25bc50405b1809993e" },
-    { step: 23, method: "ramsRevokeMandate", desc: "Autonomous revoke — fired by a compliance webhook, not a human", hash: "0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b" }
+    { step: 23, method: "ramsRevokeMandate", desc: "Autonomous revoke — fired by a compliance webhook, not a human", hash: "0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b" },
+    { step: 24, method: "ramsGrantMandate", desc: "Granted a third, short-lived mandate — setup for the signature-extend test", hash: "0x9a5a93d17d2faf1fd3b3951aededfc9c34365dbfd7f8e12d341ddb3a253dd308" },
+    { step: 25, method: "ramsExtendMandate", desc: "Extended purely by off-chain signature — broadcast by the Compliance Agent, which gained no new authority", hash: "0x3e9253c6df141ac4d33c86f82cf87aca86009291f74dd2d745e32ec7a6b1f982" }
   ];
   const rejections = [
     { step: 14, desc: "Over-cap attempt, refused (sequence step 3)", reason: "withinTransactionCap, withinCumulativeCap" },

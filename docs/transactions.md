@@ -94,6 +94,21 @@ Verified two independent ways: the transaction receipt itself (a real event log 
 
 This revoked the same mandate the live-LLM stress test (scenario A) had just used for a real payout — a deliberate choice, not an accident: using the one currently-active mandate made this a genuine test against real state, not a disposable one set up just to be knocked down.
 
+## A signature is not a transaction (2026-09-16)
+
+Every RAMS write up to this point used **direct signing**: the signer pays their own gas and authorizes on-chain in the same step. RAMS supports a second mode for its four lifecycle operations (`grant-mandate`, `revoke-mandate`, `extend-mandate`, `set-operator`) that this build had never touched: the principal signs an **EIP-712 typed-data payload off-chain** — no transaction, no gas spent by the principal at all — and *any wallet* can then broadcast it.
+
+Granted a third, short-lived mandate (`maxTransactionValue: 20 USDT`, `maxCumulativeValue: 40 USDT`, valid ~20 minutes) to give this something real to extend, then ran the signature flow for real:
+
+| # | Step | What happened | Result |
+|---|------|--------|--------|
+| 24 | Grant mandate #3 | Direct-signed, as usual — nothing new here, just setup | confirmed, tx [`0x9a5a93d1...`](https://sepolia.etherscan.io/tx/0x9a5a93d17d2faf1fd3b3951aededfc9c34365dbfd7f8e12d341ddb3a253dd308) |
+| 25 | **Extend it — purely by signature** | Fetched the typed-data envelope from `GET /rams/typed-data/extend-mandate`. The **Issuer signed it off-chain** — zero gas, no transaction sent by the Issuer. The **Compliance Agent** — a wallet with zero payout power in this system — then broadcast the already-authorized change, paying only its own gas to relay it. | confirmed, tx [`0x3e9253c6...`](https://sepolia.etherscan.io/tx/0x3e9253c6df141ac4d33c86f82cf87aca86009291f74dd2d745e32ec7a6b1f982) — `validUntil` moved from `1789590276` to `1789593876`, exactly +3600s, verified against a follow-up mandate read |
+
+**Why the broadcaster matters:** using the Compliance Agent to relay this — rather than a random throwaway wallet — makes a specific point visible. Its entire on-chain identity in this build is "revoke-only, no payout power." Broadcasting a signed extend-mandate transaction doesn't change that; it gains no new authority by paying the gas to relay someone else's already-signed intent. **Signing authorizes. Broadcasting merely delivers.** That distinction is the actual precondition for a cold-storage/air-gapped custody model: the principal's key never needs to touch a hot wallet or gas at all — it only ever needs to produce a signature, offline, and hand it to anyone.
+
+One real hiccup along the way, fixed and left in the log rather than edited out: the first attempt failed with `"signature does not recover to principal"` — the typed-data envelope's numeric fields (`chainId`, `nonce`, `deadline`, `newValidUntil`) came back from the REST API as a mix of JSON strings and numbers, and passing them through unconverted to the EIP-712 signer produced a different hash than the one Brickken's contract expected. Fixed by explicitly coercing every numeric field to its correct type (`chainId` as a `number`, the `uint256`/`uint48` fields as `bigint`) before signing. Full record: `docs/evidence/extend-via-signature-1789589285934.json`.
+
 ## Out of scope for this build
 
 - **`dividendDistribution` (the Dapp API method)**: not exercised. The STO ended in rollback (step 7 — soft cap unmet, no investors), so there was never a successful offering with real investors to distribute dividends to. The build's actual value-moving payout (steps 17–19) went through a fresh RAMS mandate's `ramsExecute`, not this method — a deliberate substitution, not a blocked dependency.
