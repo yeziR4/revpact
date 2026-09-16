@@ -88,6 +88,14 @@ Show: mechanism diagram (Issuer → Executor → Ops / Compliance).
 
 Show: `known-issues.md` or the dashboard's honesty section, briefly.
 
+## Optional beat — if there's still runway: "A signature is not a transaction" (the Custody section)
+
+There's a fourth real capability on the dashboard, right below Autonomy, not written into the timed script above because three closing arguments risks losing the viewer. Include it only if the take is running short of 5:00, or cut for time otherwise — everything it proves is still in the repo and the dashboard either way.
+
+> "One more RAMS capability nobody's shown yet: the principal can authorize a change with a pure off-chain signature — zero gas, no transaction at all — and hand it to anyone to broadcast. We tested it for real: the Issuer signed an extension off-chain, and the Compliance Agent — which has zero payout power anywhere else in this system — broadcast it. Signing authorizes. Broadcasting just delivers. That's the actual precondition for cold-storage custody."
+
+Show: the `trigger-flow` cards in the Custody section, tx `0x3e9253c6...`.
+
 ## 5:00–end — Close
 
 > "Full trail, known issues, everything — in the repo. Link below."
@@ -96,8 +104,8 @@ Show: repo URL, dashboard URL, reward wallet on screen.
 
 ## Shot list
 
-- [ ] Screen recording of the dashboard: hero → six-move sequence (linger — scroll slowly enough to see the ambient glow shift) → stress-test cards → autonomy section (linger on both, they're the closing argument) → mechanism → cast → audit trail
-- [ ] 4–5 Etherscan tabs pre-opened on the real hashes used above (steps 1, 2, 4, 6, the stress-test's scenario A tx, and the autonomous revoke tx), ready to alt-tab into
+- [ ] Screen recording of the dashboard: hero → six-move sequence (linger — scroll slowly enough to see the ambient glow shift) → stress-test cards → autonomy section → custody section if included (linger on whichever ones you keep, they're the closing argument) → mechanism → cast → audit trail
+- [ ] 5–6 Etherscan tabs pre-opened on the real hashes used above (steps 1, 2, 4, 6, the stress-test's scenario A tx, the autonomous revoke tx, and the signature-extend tx if included), ready to alt-tab into
 - [ ] Voiceover recorded separately, synced in edit
 - [ ] Final render ≤ 5:00, unlisted YouTube upload
 - [ ] If time is genuinely too tight to hit 5:00 comfortably: the six-move sequence and the autonomy section are the two non-negotiable beats. The LLM stress test can be cut to just card A (real payout) + card D (the backstop, not the injection cards) without losing the core claim.
