@@ -1,6 +1,6 @@
-# Demo video script (target: 4:00–4:30)
+# Demo video script (target: 4:30–5:00)
 
-Built around the same spine as the dashboard: state the claim, show the six real events that prove it, then the live-LLM stress test as the closing argument, then everything else as supporting evidence. Every hash below is real and confirmed — see `docs/transactions.md`.
+Built around the same spine as the dashboard: state the claim, show the six real events that prove it, then two closing arguments — a live LLM stress test, and an autonomous compliance trigger — then everything else as supporting evidence. Every hash below is real and confirmed — see `docs/transactions.md`.
 
 ## 0:00–0:15 — The claim
 
@@ -42,7 +42,7 @@ Show: the second rejection row.
 > "So we fund a fresh mandate on identical terms and let it run for real. This isn't authorized-in-principle — the investor's USDT balance actually moves, zero to twenty-five, on-chain, right now."
 Show: tx `0x16a5feea...`, the investor's balance before/after — this is the one moment to actually show a number changing, not just a transaction confirming.
 
-## 2:35–3:35 — What if the thing deciding isn't a script? (the closing argument)
+## 2:35–3:35 — What if the thing deciding isn't a script? (closing argument, part one)
 
 Scroll to the dashboard's "Stress test" section, right below the cast cards.
 
@@ -59,21 +59,36 @@ Show: cards B and C, the model's actual quoted reasoning.
 > "But here's the one that matters most — and it's not about tricking anything. A completely ordinary request for sixty-five USDT. Nothing adversarial. The model was never even told the mandate's exact fifty-dollar-per-transaction limit — it had no way to know. It proposed the transfer correctly, in good faith. The real contract refused it anyway."
 Show: card D, the exact error: `withinTransactionCap, withinCumulativeCap`.
 
-> "That's the actual claim: the money doesn't depend on the model's reasoning being reliable. Not because we got lucky fooling it — we didn't, not once — but because there's a rule underneath that the model was never in a position to break, even acting in perfect good faith."
+> "That's the first claim: the money doesn't depend on the model's reasoning being reliable. Not because we got lucky fooling it — we didn't, not once — but because there's a rule underneath that the model was never in a position to break, even acting in perfect good faith."
 
-## 3:35–4:00 — Why this is the hard part
+## 3:35–4:20 — The revoke didn't wait for a human either (closing argument, part two)
 
-> "This is the actual precondition institutions need before an agent touches a cap table: authority that's bounded and revocable by construction, not by someone's promise — and it holds whether the thing deciding is a script or a live model. Most public builds for this challenge stopped at tokenizing an asset. We closed the loop that makes an agent safe to delegate to in the first place."
+Scroll to the "Autonomy" section, right below the stress test.
+
+> "One more question. Every kill switch you just watched — the revoke in step four — happened because I ran a script that already knew the answer. That's not actually autonomous, whatever we might have implied. So we fixed that too."
+
+Show: the `trigger-flow` cards (event → evaluate() → real call).
+
+> "This is a compliance rule engine that sat in the repo since early in the build, fully written, never connected to anything. Now it's live: a real event comes in over HTTP, a rule table decides with zero human input, and if it calls for it, the Compliance Agent's one power fires on its own."
+
+> "We sent it exactly this: a high-severity sanctions flag. The rule engine decided. And it revoked the same mandate you just watched pay someone out — not a disposable one set up to be knocked down, the real, currently-active one."
+Show: tx `0x2d36133d...`, the receipt status, the follow-up mandate read confirming `revoked: true`.
+
+> "Nobody chose that outcome. A rule fired it."
+
+## 4:20–4:45 — Why this is the hard part
+
+> "This is the actual precondition institutions need before an agent touches a cap table: authority that's bounded and revocable by construction, not by someone's promise — and it holds whether the thing deciding is a script or a live model, and whether the kill switch is pulled by a person or a rule. Most public builds for this challenge stopped at tokenizing an asset. We closed the loop that makes an agent safe to delegate to in the first place."
 
 Show: mechanism diagram (Issuer → Executor → Ops / Compliance).
 
-## 4:00–4:15 — Scope, stated plainly
+## 4:45–5:00 — Scope, stated plainly
 
 > "One piece we haven't closed: ERC-8004 identity registration, blocked by a server bug on Brickken's side that we found, reproduced, and reported — not by us. Everything else in this story, including the agent paying for its own faucet claim via x402, is real and confirmed on-chain."
 
 Show: `known-issues.md` or the dashboard's honesty section, briefly.
 
-## 4:15–end — Close
+## 5:00–end — Close
 
 > "Full trail, known issues, everything — in the repo. Link below."
 
@@ -81,7 +96,8 @@ Show: repo URL, dashboard URL, reward wallet on screen.
 
 ## Shot list
 
-- [ ] Screen recording of the dashboard: hero → six-move sequence (linger here — scroll slowly enough to see the ambient glow shift) → stress-test cards (linger here too, it's the closing argument) → mechanism → cast → audit trail
-- [ ] 3–4 Etherscan tabs pre-opened on the real hashes used above (steps 1, 2, 4, 6, plus the stress-test's scenario A tx), ready to alt-tab into
+- [ ] Screen recording of the dashboard: hero → six-move sequence (linger — scroll slowly enough to see the ambient glow shift) → stress-test cards → autonomy section (linger on both, they're the closing argument) → mechanism → cast → audit trail
+- [ ] 4–5 Etherscan tabs pre-opened on the real hashes used above (steps 1, 2, 4, 6, the stress-test's scenario A tx, and the autonomous revoke tx), ready to alt-tab into
 - [ ] Voiceover recorded separately, synced in edit
-- [ ] Final render ≤ 4:30, unlisted YouTube upload
+- [ ] Final render ≤ 5:00, unlisted YouTube upload
+- [ ] If time is genuinely too tight to hit 5:00 comfortably: the six-move sequence and the autonomy section are the two non-negotiable beats. The LLM stress test can be cut to just card A (real payout) + card D (the backstop, not the injection cards) without losing the core claim.
