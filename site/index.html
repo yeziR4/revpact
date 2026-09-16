@@ -185,6 +185,16 @@
   .llm-card.resisted .llm-badge { color: var(--pending); background: var(--pending-bg); }
   .llm-card.backstop .llm-badge { color: var(--critical); background: var(--critical-bg); }
 
+  /* ---------- Autonomous trigger ---------- */
+  .trigger-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; box-shadow: var(--shadow); }
+  .trigger-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin: 16px 0; }
+  .trigger-step { flex: 1; min-width: 150px; background: var(--surface-2); border-radius: 8px; padding: 12px 14px; }
+  .trigger-step .t-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); font-weight: 600; margin-bottom: 4px; }
+  .trigger-step code { font-size: 11.5px; }
+  .trigger-arrow { display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 18px; padding: 0 2px; }
+  @media (max-width: 700px) { .trigger-arrow { display: none; } }
+  .trigger-card .verified-twice { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-dim); }
+
   /* ---------- Audit trail (de-emphasized) ---------- */
   .trail-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
   table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 12.5px; min-width: 600px; }
@@ -338,7 +348,7 @@
             <text x="330" y="201" font-size="10.5" fill="var(--critical)" fill-opacity="0.85">on compliance trigger</text>
           </g>
         </svg>
-        <figcaption>The two grants that make the five-step sequence possible: a capped mandate to Ops, a revoke-only operator approval to Compliance. Neither can do the other's job.</figcaption>
+        <figcaption>The two grants that make the six-move sequence possible: a capped mandate to Ops, a revoke-only operator approval to Compliance. Neither can do the other's job.</figcaption>
       </figure>
 
       <div class="kv-box">
@@ -347,7 +357,7 @@
         <div class="kv"><span class="k">identityRef</span><span class="v mono">0xc60e&hellip;73a42e2</span></div>
         <div class="kv"><span class="k">Principal eligibility</span><span class="v"><span class="chip ok">COMPLIANT</span></span></div>
         <div class="kv"><span class="k">First mandate</span><span class="v"><span class="chip warn">revoked (by design)</span></span></div>
-        <div class="kv"><span class="k">Second mandate</span><span class="v"><span class="chip ok">active, used for a real payout</span></span></div>
+        <div class="kv"><span class="k">Second mandate</span><span class="v"><span class="chip warn">revoked (by an autonomous trigger)</span></span></div>
       </div>
     </div>
   </section>
@@ -424,6 +434,32 @@
   </section>
 
   <section>
+    <div class="kicker">Autonomy</div>
+    <h2>The revoke didn't wait for a human either</h2>
+    <div class="section-intro">A compliance rule engine (<code>src/rules/triggerEngine.ts</code>) sat in this repo, fully built, since early in the project &mdash; and never wired to anything. Every revoke up to now happened because a human ran a script that already knew the answer. This closes that gap: a real HTTP endpoint receives an event, the rule table decides, and if it calls for it, the Compliance Agent's one real power &mdash; <code>ramsRevokeMandate</code> &mdash; fires on its own.</div>
+    <div class="trigger-card">
+      <div class="trigger-flow">
+        <div class="trigger-step">
+          <div class="t-label">Inbound event</div>
+          <code>{ severity: "high",<br>&nbsp;&nbsp;reason: "sanctions_flag" }</code>
+        </div>
+        <div class="trigger-arrow">&rarr;</div>
+        <div class="trigger-step">
+          <div class="t-label">evaluate() decides</div>
+          <code>"burn"</code> &mdash; a rule fired, nobody chose it
+        </div>
+        <div class="trigger-arrow">&rarr;</div>
+        <div class="trigger-step">
+          <div class="t-label">Real on-chain call</div>
+          <code>ramsRevokeMandate</code>, signed and sent by the Compliance Agent itself
+        </div>
+      </div>
+      <div class="verdict">Result: <a href="https://sepolia.etherscan.io/tx/0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b" target="_blank" rel="noopener" class="mono">0x2d36133d&hellip;97ba47b &rarr;</a> &mdash; confirmed, <code>status: 0x1</code>.</div>
+      <div class="verified-twice">Verified two independent ways: the transaction receipt (real event log on the <code>AgentMandate</code> contract) and a follow-up <code>GET /rams/mandate</code> read confirming <code>revoked: true</code>. The read endpoint briefly lagged the chain by a few seconds &mdash; noted honestly in <code>docs/evidence/</code> rather than smoothed over.</div>
+    </div>
+  </section>
+
+  <section>
     <div class="kicker">Everything else</div>
     <h2>Full audit trail</h2>
     <div class="section-intro">The sequence above is the argument. This is the receipts &mdash; every real call this build made, in order, including the tokenization lifecycle that isn't the headline but still has to work.</div>
@@ -468,7 +504,8 @@
     { step: 18, method: "ramsGrantMandate", desc: "Granted a fresh mandate, same terms", hash: "0x6e24c2be46b5d074ec79462dff5737695b2974718f22d8668b4367aa842ee42c" },
     { step: 19, method: "ramsExecute", desc: "Real 25 USDT payout (sequence step 6)", hash: "0x16a5feea44019fd948a2e4ad2d7be30fa06f2f44f09d3df6d20359808b9d3cac" },
     { step: 20, method: "faucet/bkn", desc: "Agent pays for its own faucet claim — signed x402 payment, not an API key", hash: "0x749b7051e71a7d4acc02f9565ce87cf5ac91b22bd8f274e7b7bfe9694d76b80a" },
-    { step: 21, method: "ramsExecute", desc: "LLM-decided real payout — live agent stress test, scenario A", hash: "0x0c228e833f47ed1869f3dff29775922b23b93d98367a1b25bc50405b1809993e" }
+    { step: 21, method: "ramsExecute", desc: "LLM-decided real payout — live agent stress test, scenario A", hash: "0x0c228e833f47ed1869f3dff29775922b23b93d98367a1b25bc50405b1809993e" },
+    { step: 23, method: "ramsRevokeMandate", desc: "Autonomous revoke — fired by a compliance webhook, not a human", hash: "0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b" }
   ];
   const rejections = [
     { step: 14, desc: "Over-cap attempt, refused (sequence step 3)", reason: "withinTransactionCap, withinCumulativeCap" },

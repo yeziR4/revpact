@@ -80,6 +80,20 @@ Everything above ran on deterministic script logic deciding what to request. Thi
 
 All ten raw model outputs (system prompt, user message, parsed decision, and full downstream result) are saved in `docs/evidence/llm-agent-*.json` — nothing summarized or cherry-picked out of that set.
 
+## The revoke didn't wait for a human either (2026-09-16)
+
+`src/rules/triggerEngine.ts` was written early in this build — a small rule table mapping a compliance event (token, investor, severity, reason) to an action — and its own docstring stated the goal plainly: *"the Compliance Agent's action is driven by a real inbound signal rather than a human invoking it in the demo."* It was never actually wired to anything. Every revoke up to this point (step 15, and implicitly every mandate the LLM stress test relied on staying active) happened because a human ran a script that already knew the outcome — not what Brickken's own framing asks for ("a compliance action executes autonomously, from a trigger"), and not what this file's own comment promised either.
+
+Closed for real: `src/rules/server.ts`, a small HTTP server (`npm run compliance:server`) that receives a `POST /compliance-webhook` event, runs it through the same unmodified `evaluate()` function, and — with zero human choosing the outcome — signs and sends a real `ramsRevokeMandate` transaction if the verdict calls for it.
+
+| # | Step | What happened | Result |
+|---|------|--------|--------|
+| 23 | **Autonomous revoke** | Sent `{severity: "high", reason: "sanctions_flag"}` to the webhook. `evaluate()` returned `"burn"` — the only lever this build actually has is `ramsRevokeMandate`, so any non-trivial verdict routes there, documented honestly rather than hidden. The server signed and sent it itself. | confirmed, tx [`0x2d36133d...`](https://sepolia.etherscan.io/tx/0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b) — `status: 0x1` on the receipt |
+
+Verified two independent ways: the transaction receipt itself (a real event log emitted by the `AgentMandate` contract), and a follow-up `GET /rams/mandate` read confirming `revoked: true`. The read endpoint briefly still reported `revoked: false` immediately after the send — re-queried 5 seconds later and it had caught up. Noted honestly rather than smoothed over: that was Brickken's own read-indexer lagging the chain by a few seconds, not an execution question — the on-chain receipt was authoritative the entire time. Full record: `docs/evidence/compliance-trigger-1789587720324.json`.
+
+This revoked the same mandate the live-LLM stress test (scenario A) had just used for a real payout — a deliberate choice, not an accident: using the one currently-active mandate made this a genuine test against real state, not a disposable one set up just to be knocked down.
+
 ## Out of scope for this build
 
 - **`dividendDistribution` (the Dapp API method)**: not exercised. The STO ended in rollback (step 7 — soft cap unmet, no investors), so there was never a successful offering with real investors to distribute dividends to. The build's actual value-moving payout (steps 17–19) went through a fresh RAMS mandate's `ramsExecute`, not this method — a deliberate substitution, not a blocked dependency.

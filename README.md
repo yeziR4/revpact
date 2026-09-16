@@ -20,7 +20,7 @@ Brickken's own framing of the Agentic Challenge is specific: *"the agent calls t
 
 1. An agent **funds itself** — claims 100 BKN from Brickken's Sepolia faucet with no human touching a faucet UI, then (target: see Status) spends that same BKN via x402 to pay for a RAMS operation, closing the loop on its own funds rather than a human's.
 2. An agent's authority is **delegated, bounded, and revocable** via a RAMS mandate — not a shared private key, not a role flag in a database.
-3. A **compliance action executes autonomously**, from a trigger, inside that mandate boundary — and is provably unable to exceed it.
+3. A **compliance action executes autonomously**, from a trigger, inside that mandate boundary — and is provably unable to exceed it. Updated 2026-09-16, stated honestly: until this date, every revoke in this build was a human running a script that already knew the answer — not actually autonomous, whatever the framing implied. `src/rules/server.ts` closes that for real now (see "The revoke didn't wait for a human either" in Status).
 4. The boundary holds **even when the thing deciding isn't a script** — a live LLM proposes the transfer, not deterministic code, and the mandate is still the one with the final word (see "A live LLM in the loop" in Status).
 
 Most public builds for this programme stop at step 1 (a single ERC-8004 registration) or get partway through step 2 (RAMS wiring present but not confirmed executing live). RevPact's scope is deliberately just those three things, done completely, wrapped in one coherent real-world story, rather than a wider feature list done partially.
@@ -64,12 +64,14 @@ site/                          the live build-log dashboard (published as this b
 scripts/tx.mjs                 the real prepare -> sign -> send -> poll runner; drives every Dapp/RAMS write
 scripts/faucet-bkn.mjs         claims BKN from Brickken's Sepolia faucet
 scripts/payloads/              every RAMS call, pre-staged and ready to run once each dependency clears
-src/rules/                     the compliance trigger engine (pure logic, chain-independent)
+src/rules/                     the compliance trigger engine (pure logic, chain-independent) + server.ts, the live webhook that fires it for real
+scripts/llm-agent.mjs          live LLM decision layer (OpenRouter) for the Ops Agent, stress-tested against injection
+scripts/x402-pay.mjs           real x402 payment signer (EIP-3009), used for the agent-paid faucet claim
 ```
 
 ## Status
 
-✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 22 real Sepolia transactions and API calls against the live sandbox (19 via `scripts/tx.mjs`'s prepare→sign→send→poll flow, a genuine agent-signed x402 payment via `scripts/x402-pay.mjs`, and two more via `scripts/llm-agent.mjs`'s live-LLM stress test). Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
+✅ **Done — the full mandate lifecycle, closed, including a real money-moving payout.** 23 real Sepolia transactions and API calls against the live sandbox (19 via `scripts/tx.mjs`'s prepare→sign→send→poll flow, a genuine agent-signed x402 payment via `scripts/x402-pay.mjs`, two via `scripts/llm-agent.mjs`'s live-LLM stress test, and one autonomous revoke via `src/rules/server.ts`). Full log: [`docs/transactions.md`](docs/transactions.md). Live status view: **[the dashboard](https://claude.ai/code/artifact/7207bc10-1405-4ee4-ae9d-4ac41fae3e53)**.
 
 The complete story, all confirmed on-chain or rejected by the live contract, same session:
 
@@ -93,14 +95,16 @@ Every mechanism the RAMS mandate design claims — grant, authorize, cap-reject,
 
 Full detail, all ten raw model outputs, in `docs/transactions.md` and `docs/evidence/llm-agent-*.json`.
 
+**Point 5, added 2026-09-16 — the revoke didn't wait for a human either.** `src/rules/triggerEngine.ts` was written early in this build and never wired to anything — a rule table, evaluated by nothing. `src/rules/server.ts` closes that: a real HTTP endpoint receives a compliance event, `evaluate()` decides with zero human input, and the Compliance Agent's one real power — `ramsRevokeMandate` — fires on its own if the verdict calls for it. Fired for real: `{severity: "high", reason: "sanctions_flag"}` in → `evaluate()` returned `"burn"` → a real transaction, signed and sent by the process itself: tx [`0x2d36133d...`](https://sepolia.etherscan.io/tx/0x2d36133dab996e92564c7fddd170e6df9fc613f410624aed286470b3897ba47b), confirmed (`status: 0x1`), verified independently against a follow-up mandate read. This revoked the same mandate the live-LLM stress test had just used — a real, currently-active mandate, not a disposable one staged just to be knocked down. Full detail in `docs/transactions.md`.
+
 ## Judging alignment
 
 | Criterion | How this build addresses it |
 |---|---|
-| Most innovative use case | Revenue-share tokenization isn't itself new, but a *mandate-bounded agent hierarchy operating it* — one agent that can only pay, one that can only kill — is a materially different pattern than "agent watches asset and reacts." |
-| Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires — and holds even when a live LLM, not a script, is the one deciding what to request. |
-| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain, plus a genuine agent-signed x402 payment and a live LLM decision layer (see Status). ERC-8004 identity registration hit a reproduced Brickken server bug rather than a funding gap — found, documented, and reported rather than papered over. |
-| Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. And it's the control story that still holds once the deciding agent is a live model instead of trusted code. |
+| Most innovative use case | Revenue-share tokenization isn't itself new, but a *mandate-bounded agent hierarchy operating it* — one agent that can only pay, one that can only kill — is a materially different pattern than "agent watches asset and reacts." And the kill isn't a human pulling a lever either: a rule engine fires it on its own. |
+| Most interesting / engaging concept | The demo's climax is a trigger the operator doesn't control, executed by an agent whose authority is cryptographically capped before the trigger ever fires — holds even when a live LLM, not a script, decides what to request, and the trigger itself fires with nobody choosing the outcome. |
+| Best technical execution & API integration | The full RAMS delegate/execute/revoke lifecycle and the complete Dapp API lifecycle (tokenize, offer, whitelist, mint), all proven live on-chain, plus a genuine agent-signed x402 payment, a live LLM decision layer, and an autonomous compliance trigger (see Status). ERC-8004 identity registration hit a reproduced Brickken server bug rather than a funding gap — found, documented, and reported rather than papered over. |
+| Highest real-world viability | "Bounded delegated authority + automatic compliance kill-switch" is the actual precondition institutions need before letting any agent near a cap table — this is the control story, not just the tokenization story. And it's the control story that still holds once the deciding agent is a live model, and the kill-switch itself is triggered by a rule, not a person. |
 
 ## AI disclosure
 

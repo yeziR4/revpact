@@ -8,7 +8,8 @@
     "setup:wallet": "tsx scripts/setup-wallet.ts",
     "faucet:bkn": "node scripts/faucet-bkn.mjs",
     "tx": "node scripts/tx.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "compliance:server": "tsx src/rules/server.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
