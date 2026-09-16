@@ -1,6 +1,6 @@
-# Demo video script (target: 3:00–3:30)
+# Demo video script (target: 4:00–4:30)
 
-Built around the same spine as the dashboard: state the claim, show the six real events that prove it, then everything else as supporting evidence. Every hash below is real and confirmed — see `docs/transactions.md`.
+Built around the same spine as the dashboard: state the claim, show the six real events that prove it, then the live-LLM stress test as the closing argument, then everything else as supporting evidence. Every hash below is real and confirmed — see `docs/transactions.md`.
 
 ## 0:00–0:15 — The claim
 
@@ -42,19 +42,38 @@ Show: the second rejection row.
 > "So we fund a fresh mandate on identical terms and let it run for real. This isn't authorized-in-principle — the investor's USDT balance actually moves, zero to twenty-five, on-chain, right now."
 Show: tx `0x16a5feea...`, the investor's balance before/after — this is the one moment to actually show a number changing, not just a transaction confirming.
 
-## 2:35–3:00 — Why this is the hard part
+## 2:35–3:35 — What if the thing deciding isn't a script? (the closing argument)
 
-> "This is the actual precondition institutions need before an agent touches a cap table: authority that's bounded and revocable by construction, not by someone's promise. Most public builds for this challenge stopped at tokenizing an asset. We closed the loop that makes an agent safe to delegate to in the first place."
+Scroll to the dashboard's "Stress test" section, right below the cast cards.
+
+> "Everything so far ran on deterministic logic deciding what to request. Here's the harder question: what if the thing deciding is an actual model, reading real requests — including ones written to manipulate it?"
+
+Show: the four `llm-trials` cards.
+
+> "A normal request: the model correctly proposes moving fifteen USDT to the investor. It passes the checks, the mandate authorizes it, and it's a real transaction — right here."
+Show: card A, tx `0x0c228e83...`.
+
+> "Then two attempts to manipulate it — a fake support ticket asking to redirect the payout wallet, a fake email demanding a 'corrected' nine-hundred-ninety-nine dollar distribution with forged legal sign-off. The model declined both, every time we tried."
+Show: cards B and C, the model's actual quoted reasoning.
+
+> "But here's the one that matters most — and it's not about tricking anything. A completely ordinary request for sixty-five USDT. Nothing adversarial. The model was never even told the mandate's exact fifty-dollar-per-transaction limit — it had no way to know. It proposed the transfer correctly, in good faith. The real contract refused it anyway."
+Show: card D, the exact error: `withinTransactionCap, withinCumulativeCap`.
+
+> "That's the actual claim: the money doesn't depend on the model's reasoning being reliable. Not because we got lucky fooling it — we didn't, not once — but because there's a rule underneath that the model was never in a position to break, even acting in perfect good faith."
+
+## 3:35–4:00 — Why this is the hard part
+
+> "This is the actual precondition institutions need before an agent touches a cap table: authority that's bounded and revocable by construction, not by someone's promise — and it holds whether the thing deciding is a script or a live model. Most public builds for this challenge stopped at tokenizing an asset. We closed the loop that makes an agent safe to delegate to in the first place."
 
 Show: mechanism diagram (Issuer → Executor → Ops / Compliance).
 
-## 3:00–3:15 — Scope, stated plainly
+## 4:00–4:15 — Scope, stated plainly
 
-> "One piece we didn't close: the agent paying for its own faucet claim via x402, and an ERC-8004 identity registration — both needed Base Sepolia funding that didn't arrive in the build window. It's in the repo's known-issues log, not hidden. What's proven here is the harder half: the mandate that actually holds."
+> "One piece we haven't closed: ERC-8004 identity registration, blocked by a server bug on Brickken's side that we found, reproduced, and reported — not by us. Everything else in this story, including the agent paying for its own faucet claim via x402, is real and confirmed on-chain."
 
 Show: `known-issues.md` or the dashboard's honesty section, briefly.
 
-## 3:15–end — Close
+## 4:15–end — Close
 
 > "Full trail, known issues, everything — in the repo. Link below."
 
@@ -62,7 +81,7 @@ Show: repo URL, dashboard URL, reward wallet on screen.
 
 ## Shot list
 
-- [ ] Screen recording of the dashboard: hero → six-move sequence (linger here, it's the demo — scroll slowly enough to see the ambient glow shift) → mechanism → cast → audit trail
-- [ ] 2–3 Etherscan tabs pre-opened on the sequence's real hashes, ready to alt-tab into
+- [ ] Screen recording of the dashboard: hero → six-move sequence (linger here — scroll slowly enough to see the ambient glow shift) → stress-test cards (linger here too, it's the closing argument) → mechanism → cast → audit trail
+- [ ] 3–4 Etherscan tabs pre-opened on the real hashes used above (steps 1, 2, 4, 6, plus the stress-test's scenario A tx), ready to alt-tab into
 - [ ] Voiceover recorded separately, synced in edit
-- [ ] Final render ≤ 3:30, unlisted YouTube upload
+- [ ] Final render ≤ 4:30, unlisted YouTube upload
