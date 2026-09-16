@@ -214,7 +214,7 @@
 
   <div class="status-rail">
     <span class="chip ok">● Ethereum Sepolia</span>
-    <span class="chip">20 real calls</span>
+    <span class="chip" id="call-count-chip">…</span>
     <span class="chip" id="live-chip" hidden></span>
     <div class="links">
       <a href="https://github.com/yeziR4/revpact" target="_blank" rel="noopener">Repo &rarr;</a>
@@ -448,6 +448,9 @@
     }
     tbody.appendChild(tr);
   }
+  // The chip is derived from this same array, not a separately hardcoded
+  // number -- it can't drift out of sync with the audit trail again.
+  document.getElementById("call-count-chip").textContent = `${allRows.length} real calls`;
 
   const statuses = [
     { state: "resolved", text: "<b>RAMS principal eligibility</b> — a ComplianceProvider mismatch from a Brickken Sandbox redeployment. Fixed Sep 10." },
